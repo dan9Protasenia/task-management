@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        form {
+            width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Создание задачи</h1>
+    <form method="post">
+        <label for="name">Название:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="priority">Приоритет:</label>
+        <select id="priority" name="priority" required>
+            <option value="Low">Низкий</option>
+            <option value="Medium">Средний</option>
+            <option value="High">Высокий</option>
+        </select>
+
+        <label for="status">Статус:</label>
+        <select id="status" name="status" required>
+            <option value="New">Не начата</option>
+            <option value="In Progress">В процессе</option>
+            <option value="Completed">Завершена</option>
+            <option value="Postponed">Отложена</option>
+        </select>
+
+        <input type="submit" value="Создать">
+    </form>
+</body>
+</html>

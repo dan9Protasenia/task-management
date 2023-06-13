@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            height: calc(100vh - 40px); /* Высота контейнера body - высота верхнего и нижнего отступов */
+            overflow-y: auto; /* Добавление полос прокрутки, если содержимое превышает высоту контейнера */
+
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 30px;
+            margin-top: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 30px; /* Отступ сверху */
+        }
+
+        li {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .project-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .project-details {
+            margin-top: 5px;
+        }
+
+        .project-description {
+            font-style: italic;
+            color: #888;
+        }
+
+        .project-date {
+            color: #666;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background-color: transparent;
+            color: #f44336;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+            margin: 0 4px;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .create-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .create-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .create-button a:hover {
+            background-color: #45a049;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f5f5f5;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 999;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .navigation a.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <a href="/projects" class="active">Проекты</a>
+        <a href="http://127.0.0.1:5001/task" class="navigation-link">Задачи</a>
+        <a href="http://127.0.0.1:5002/employee" class="navigation-link">Сотрудники</a>
+        <a href="http://127.0.0.1:5005/job" class="navigation-link">Должность</a>
+    </div>
+
+    <h1>Проекты</h1>
+<ul>
+  {% for project in projects %}
+  <li>
+    <div class="project-name">{{ project.name }}</div>
+    <div class="project-details">
+      <span class="project-short-name">Сокращенное название: {{ project.short_name }}</span><br>
+      <span class="project-description">Описание: {{ project.description }}</span><br>
+      <span class="project-date">Дата старта проекта: {{ project.start_date }}</span><br>
+      <span class="project-date">Дата планового завершения проекта: {{ project.planned_end_date }}</span><br>
+      <span class="project-date">Дата фактического завершения проекта: {{ project.actual_end_date }}</span>
+    </div>
+    <form method="POST" action="{{ url_for('delete_project', project_id=project.id) }}" onsubmit="return confirm('Вы уверены, что хотите удалить запись?')">
+      <button class="delete-button" type="submit">✖</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+<div class="create-button">
+  <a href="/create_project">Создание проекта</a>
+</div>

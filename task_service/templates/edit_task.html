@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        button[type="button"] {
+            background-color: #f44336;
+        }
+        button[type="button"]:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Изминение задачи</h1>
+    <form action="{{ url_for('edit_task', task_id=task.id) }}" method="post">
+        <div class="form-group">
+            <label for="name">Название:</label>
+            <input type="text" id="name" name="name" value="{{ task.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="priority">Приоритет:</label>
+            <select id="priority" name="priority" required>
+                <option value="1" {% if task.priority == 1 %}selected{% endif %}>Высокий</option>
+                <option value="2" {% if task.priority == 2 %}selected{% endif %}>Средний</option>
+                <option value="3" {% if task.priority == 3 %}selected{% endif %}>Низкий</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="status">Статус:</label>
+            <select id="status" name="status" required>
+                <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Не начата</option>
+                <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>В процессе</option>
+                <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Завершена</option>
+                <option value="Postponed" {% if task.status == 'Postponed' %}selected{% endif %}>Отложена</option>
+            </select>
+        </div>
+        <button type="submit">Сохранить изминение</button>
+        <a href="{{ url_for('task') }}"><button type="button">Назад</button></a>
+    </form>
+</body>
+</html>

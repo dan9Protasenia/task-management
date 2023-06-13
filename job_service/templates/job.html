@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            max-width: 700px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .create-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .delete-button {
+            background-color: transparent;
+            color: #f44336;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+            margin: 0 4px;
+        }
+        .delete-button:hover {
+            color: #d32f2f;
+        }
+        .edit-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .navigation a.active {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <a href="http://127.0.0.1:5000/projects" class="navigation-link">Проекты</a>
+        <a href="http://127.0.0.1:5001/task" class="navigation-link">Задачи</a>
+        <a href="http://127.0.0.1:5002/employee" class="navigation-link">Сотрудники</a>
+        <a href="/job" class="active">Должность</a>
+    </div>
+
+    <h1>Должность</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+<th>Название должности</th>
+<th>Тарифная ставка</th>
+<th>Действия</th>
+</tr>
+{% for job in jobs %}
+<tr>
+    <td>{{ job.id }}</td>
+    <td>{{ job.name_position }}</td>
+    <td>{{ job.tariff_rate }}</td>
+    <td>
+        <a href="{{ url_for('edit_job', job_id=job.id) }}" class="edit-icon">&#9998;</a> |
+        <form action="{{ url_for('delete_job', job_id=job.id) }}" method="post" style="display:inline">
+            <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить запись?')">&#10006;</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+</table>
+<div class="container">
+    <a href="{{ url_for('create_job') }}" class="create-button">Создать должность</a>
+</div>
+
+</body>
+</html>
+
