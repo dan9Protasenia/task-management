@@ -30,16 +30,14 @@
             background-color: #f5f5f5;
         }
         .create-button {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            background-color: #4CAF50;
+            background-color: #4caf50;
             color: #fff;
             padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
-            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
         .delete-button {
             background-color: transparent;
@@ -76,41 +74,48 @@
             background-color: #333;
             color: #fff;
         }
+        .container {
+            text-align: center;
+        }
+        .container .create-button {
+            display: inline-block;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="navigation">
-
         <a href="http://127.0.0.1:5000/projects" class="navigation-link">Проекты</a>
         <a href="/task" class="active">Задачи</a>
         <a href="http://127.0.0.1:5002/employee" class="navigation-link">Сотрудники</a>
         <a href="http://127.0.0.1:5005/job" class="navigation-link">Должность</a>
     </div>
-   <h1>Задачи</h1>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Название</th>
-        <th>Приоритет</th>
-        <th>Дата начала</th>
-        <th>Статус</th>
-    </tr>
-    {% for task in tasks %}
-    <tr>
-        <td>{{ task.id }}</td>
-        <td>{{ task.name }}</td>
-        <td>{{ task.priority }}</td>
-        <td>{{ task.start_date }}</td>
-        <td>
-            <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-icon">&#9998;</a> |
-            <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" style="display:inline">
-                <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить запись?')">&#10006;</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-<a href="{{ url_for('create_task') }}" class="create-button">Создать задачу</a>
-
+    <h1>Задачи</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Приоритет</th>
+            <th>Дата начала</th>
+            <th>Статус</th>
+        </tr>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.name }}</td>
+            <td>{{ task.priority }}</td>
+            <td>{{ task.start_date }}</td>
+            <td>
+                <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-icon">&#9998;</a> |
+                <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" style="display:inline">
+                    <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить запись?')">&#10006;</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="container">
+        <a href="{{ url_for('create_task') }}" class="create-button">Создать задачу</a>
+    </div>
 </body>
 </html>
