@@ -8,9 +8,8 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
-            height: calc(100vh - 40px); /* Высота контейнера body - высота верхнего и нижнего отступов */
-            overflow-y: auto; /* Добавление полос прокрутки, если содержимое превышает высоту контейнера */
-
+            height: calc(100vh - 40px);
+            overflow-y: auto;
         }
 
         h1 {
@@ -23,7 +22,35 @@
         ul {
             list-style-type: none;
             padding: 0;
-            margin-top: 30px; /* Отступ сверху */
+            margin-top: 30px;
+        }
+
+        .edit-icon {
+            position: absolute;
+            top: 8px;
+            right: 50px;
+            font-size: 30px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+            background-color: transparent;
+            color: #f44336;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            font-size: 30px;
+            line-height: 1;
+            margin: 0 4px;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
         }
 
         li {
@@ -52,25 +79,6 @@
             color: #666;
         }
 
-        .delete-button {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            background-color: transparent;
-            color: #f44336;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            padding: 0;
-            font-size: 16px;
-            line-height: 1;
-            margin: 0 4px;
-        }
-
-        .delete-button:hover {
-            background-color: #d32f2f;
-        }
-
         .create-button {
             margin-top: 20px;
             text-align: center;
@@ -84,10 +92,34 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            position: relative;
         }
 
         .create-button a:hover {
             background-color: #45a049;
+        }
+
+        .create-button a:before,
+        .create-button a:after {
+            content: '';
+            position: absolute;
+            background-color: #fff;
+        }
+
+        .create-button a:before {
+            width: 2px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .create-button a:after {
+            width: 10px;
+            height: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .navigation {
@@ -115,7 +147,6 @@
             background-color: #333;
             color: #fff;
         }
-
     </style>
 </head>
 <body>
@@ -127,23 +158,28 @@
     </div>
 
     <h1>Проекты</h1>
-<ul>
-  {% for project in projects %}
-  <li>
-    <div class="project-name">{{ project.name }}</div>
-    <div class="project-details">
-      <span class="project-short-name">Сокращенное название: {{ project.short_name }}</span><br>
-      <span class="project-description">Описание: {{ project.description }}</span><br>
-      <span class="project-date">Дата старта проекта: {{ project.start_date }}</span><br>
-      <span class="project-date">Дата планового завершения проекта: {{ project.planned_end_date }}</span><br>
-      <span class="project-date">Дата фактического завершения проекта: {{ project.actual_end_date }}</span>
+    <ul>
+        {% for project in projects %}
+            <li {% if project.status == 'Завершено' and project.actual_end_date %}style="background-color: grey;"{% elif project.status != 'Завершено' and project.status != 'Отложено' and project.planned_end_date < today %}style="background-color: red;"{% elif project.status != 'Завершено' and project.status != 'Отложено' and project.planned_end_date - today <= timedelta(days=7) %}style="background-color: yellow;"{% endif %}>
+                <span class="project-name">{{ project.name }}</span><br>
+                <span class="project-short-name">Сокращенное название: {{ project.short_name|safe }}</span><br>
+                <span class="project-description">{{ project.description }}</span><br>
+                <span class="project-start-date">Дата начала: {{ project.start_date.strftime('%d.%m.%Y') }}</span><br>
+                <span class="project-planned-end-date">Планируемая дата завершения: {{ project.planned_end_date.strftime('%d.%m.%Y') }}</span><br>
+                {% if project.status == 'Завершено' %}
+                    <span class="project-actual-end-date">Фактическая дата завершения: {{ project.actual_end_date.strftime('%d.%m.%Y') }}</span><br>
+                {% endif %}
+                <span class="project-cost">Стоимость: {{ project.cost }}</span><br>
+                <span class="project-status">Статус: {{ project.status }}</span><br>
+                <form action="{{ url_for('delete_project', project_id=project.id) }}" method="post">
+                    <button class="delete-button" type="submit" onclick="return confirm('Вы уверены, что хотите удалить запись?')">&#10006;</button>
+                </form>
+                <a href="{{ url_for('edit_project', project_id=project.id) }}" class="edit-icon">&#9998;</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="create-button">
+        <a href="/create_project">Создание проекта</a>
     </div>
-    <form method="POST" action="{{ url_for('delete_project', project_id=project.id) }}" onsubmit="return confirm('Вы уверены, что хотите удалить запись?')">
-      <button class="delete-button" type="submit">✖</button>
-    </form>
-  </li>
-  {% endfor %}
-</ul>
-<div class="create-button">
-  <a href="/create_project">Создание проекта</a>
-</div>
+</body>
+</html>

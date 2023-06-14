@@ -1,21 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-from datetime import date
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from datetime import date, timedelta, datetime
+from bd import bd, Project
 
 project = Flask(__name__)
-project.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+project.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///projects.db'
+# project.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(project)
-class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    short_name = db.Column(db.String(20), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    start_date = db.Column(db.Date, nullable=False)
-    planned_end_date = db.Column(db.Date, nullable=False)
-    actual_end_date = db.Column(db.Date, nullable=True)
+bd.init_app(project)
 
 @project.route('/')
 def index():
@@ -24,7 +16,7 @@ def index():
 @project.route('/projects')
 def projects():
     projects = Project.query.all()
-    return render_template('projects.html', projects=projects)
+    return render_template('projects.html', projects=projects, today=date.today(), timedelta=timedelta)
 
 @project.route('/create_project', methods=['GET', 'POST'])
 def create_project():
@@ -33,8 +25,15 @@ def create_project():
         short_name = request.form['short_name']
         description = request.form['description']
         start_date = date.today()
-        planned_end_date = date.today()
-        actual_end_date = date.today()
+        planned_end_date_str = request.form['planned_end_date']
+        planned_end_date = datetime.strptime(planned_end_date_str, '%Y-%m-%d').date()
+
+        actual_end_date = None
+        cost = float(request.form['cost'])
+        status = request.form['status']
+
+        if status == 'Завершено':
+            actual_end_date = date.today()
 
         project = Project(
             name=name,
@@ -42,15 +41,18 @@ def create_project():
             description=description,
             start_date=start_date,
             planned_end_date=planned_end_date,
-            actual_end_date=actual_end_date
+            actual_end_date=actual_end_date,
+            cost=cost,
+            status=status
         )
 
-        db.session.add(project)
-        db.session.commit()
+        bd.session.add(project)
+        bd.session.commit()
 
         return redirect(url_for('projects'))
 
     return render_template('create_project.html')
+
 
 @project.route('/edit_project/<int:project_id>', methods=['GET', 'POST'])
 def edit_project(project_id):
@@ -60,18 +62,22 @@ def edit_project(project_id):
         project.name = request.form['name']
         project.short_name = request.form['short_name']
         project.description = request.form['description']
+        project.cost = float(request.form['cost'])
+        project.status = request.form['status']
+        project.planned_end_date = datetime.strptime(request.form['planned_end_date'], '%Y-%m-%d').date()
 
-        db.session.commit()
+        bd.session.commit()
 
         return redirect(url_for('projects'))
 
     return render_template('edit_project.html', project=project)
 
+
 @project.route('/delete_project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
     project = Project.query.get(project_id)
-    db.session.delete(project)
-    db.session.commit()
+    bd.session.delete(project)
+    bd.session.commit()
 
     return redirect(url_for('projects'))
 

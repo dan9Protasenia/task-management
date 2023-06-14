@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Project</title>
+    <title>Edit Project</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -62,32 +62,32 @@
     </style>
 </head>
 <body>
-    <h1>Создание проекта</h1>
-    <form method="POST" action="/create_project">
+    <h1>Редактирование проекта</h1>
+    <form method="POST" action="/edit_project/{{ project.id }}">
         <label for="name">Название проекта:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" value="{{ project.name }}" required>
 
         <label for="short_name">Короткое название проекта:</label>
-        <input type="text" id="short_name" name="short_name" required>
+        <input type="text" id="short_name" name="short_name" value="{{ project.short_name }}" required>
 
         <label for="description">Описание:</label><br>
-        <textarea id="description" name="description"></textarea>
+        <textarea id="description" name="description">{{ project.description }}</textarea>
 
         <label for="cost">Стоимость проекта:</label>
-        <input type="number" id="cost" name="cost" required>
+        <input type="number" id="cost" name="cost" value="{{ project.cost }}" required>
 
         <label for="status">Статус проекта:</label>
         <select id="status" name="status" required>
-            <option value="Запланирован">Запланирован</option>
-            <option value="В работе">В работе</option>
-            <option value="Завершено">Завершено</option>
-            <option value="Отложено">Отложено</option>
+            <option value="Запланирован" {% if project.status == 'Запланирован' %} selected {% endif %}>Запланирован</option>
+            <option value="В работе" {% if project.status == 'В работе' %} selected {% endif %}>В работе</option>
+            <option value="Завершено" {% if project.status == 'Завершено' %} selected {% endif %}>Завершено</option>
+            <option value="Отложено" {% if project.status == 'Отложено' %} selected {% endif %}>Отложено</option>
         </select>
 
         <label for="planned_end_date">Планируемая дата завершения:</label>
-        <input type="date" id="planned_end_date" name="planned_end_date" required>
+        <input type="date" id="planned_end_date" name="planned_end_date" value="{{ project.planned_end_date.strftime('%Y-%m-%d') }}" required>
 
-        <input type="submit" value="Создать проект">
+        <input type="submit" value="Сохранить изменения">
     </form>
 </body>
 </html>
