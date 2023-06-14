@@ -1,19 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from bd import bd, Job
 
 job = Flask(__name__)
 job.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job.db'
 
-db = SQLAlchemy(job)
-migrate = Migrate(job, db)
-class Job(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name_position = db.Column(db.String(50), nullable=False)
-    tariff_rate = db.Column(db.Integer, nullable=False)
-@job.before_request
-def create_tables():
-    db.create_all()
+bd.init_app(job)
+
 @job.route('/job')
 def jobs():
     jobs = Job.query.all()
@@ -30,8 +22,8 @@ def create_job():
             tariff_rate=tariff_rate
         )
 
-        db.session.add(job)
-        db.session.commit()
+        bd.session.add(job)
+        bd.session.commit()
 
         return redirect(url_for('jobs'))
 
@@ -45,7 +37,7 @@ def edit_job(job_id):
         job.name_position = request.form['name_position']
         job.tariff_rate = request.form['tariff_rate']
 
-        db.session.commit()
+        bd.session.commit()
 
         return redirect(url_for('jobs'))
 
@@ -54,8 +46,8 @@ def edit_job(job_id):
 @job.route('/delete_job/<int:job_id>', methods=['POST'])
 def delete_job(job_id):
     job = Job.query.get(job_id)
-    db.session.delete(job)
-    db.session.commit()
+    bd.session.delete(job)
+    bd.session.commit()
 
     return redirect(url_for('jobs'))
 
