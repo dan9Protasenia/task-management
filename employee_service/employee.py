@@ -1,21 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from bd import bd, Employee
+
 employee = Flask(__name__)
 employee.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employee.db'
 
-db = SQLAlchemy(employee)
-migrate = Migrate(employee, db)
-class Employee(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    last_name = db.Column(db.String(50), nullable=False)
-    first_name = db.Column(db.String(50), nullable=False)
-    middle_name = db.Column(db.String(50), nullable=True)
-    position = db.Column(db.String(100), nullable=False)
-
-@employee.before_request
-def create_tables():
-    db.create_all()
+bd.init_app(employee)
 
 @employee.route('/employee')
 def employees():
@@ -37,8 +26,8 @@ def create_employee():
             position=position
         )
 
-        db.session.add(employee)
-        db.session.commit()
+        bd.session.add(employee)
+        bd.session.commit()
 
         return redirect(url_for('employees'))
 
@@ -54,7 +43,7 @@ def edit_employee(employee_id):
         employee.middle_name = request.form['middle_name']
         employee.position = request.form['position']
 
-        db.session.commit()
+        bd.session.commit()
 
         return redirect(url_for('employees'))
 
@@ -63,8 +52,8 @@ def edit_employee(employee_id):
 @employee.route('/delete_employee/<int:employee_id>', methods=['POST'])
 def delete_employee(employee_id):
     employee = Employee.query.get(employee_id)
-    db.session.delete(employee)
-    db.session.commit()
+    bd.session.delete(employee)
+    bd.session.commit()
 
     return redirect(url_for('employees'))
 
