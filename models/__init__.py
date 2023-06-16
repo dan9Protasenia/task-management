@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+bd = SQLAlchemy()
 
-from .Project import Project
-# from . import Task
-# from . import Employee
-# from . import Job
+from .project_model import Project
+from .task_model import Task
+from .employee_model import Employee
+from .job_model import Job

@@ -1,13 +1,22 @@
-from flask_sqlalchemy import SQLAlchemy
+from abc import ABC, abstractmethod
 
-db = SQLAlchemy()
+class AbstractRepository(ABC):
+    @abstractmethod
+    def get_all(self):
+        pass
 
-from .project_repository import ProjectRepository
-from .task_repository import TaskRepository
-from .employee_repository import EmployeeRepository
-from .job_repository import JobRepository
+    @abstractmethod
+    def get_by_id(self, project_id):
+        pass
 
-project_repository = ProjectRepository()
-task_repository = TaskRepository()
-employee_repository = EmployeeRepository()
-job_repository = JobRepository()
+    @abstractmethod
+    def create(self, project):
+        pass
+
+    @abstractmethod
+    def update(self, project):
+        pass
+
+    @abstractmethod
+    def delete(self, project):
+        pass

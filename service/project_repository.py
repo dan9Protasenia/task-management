@@ -1,7 +1,8 @@
-from models.Project import Project
-from models import db
+from models.project_model import bd
+from models.project_model import Project
+from . import AbstractRepository
 
-class ProjectRepository:
+class ProjectRepository(AbstractRepository):
     def get_all(self):
         return Project.query.all()
 
@@ -9,15 +10,12 @@ class ProjectRepository:
         return Project.query.get(project_id)
 
     def create(self, project):
-        db.session.add(project)
-        self.commit()
+        bd.session.add(project)
+        bd.session.commit()
 
-    def update(self):
-        self.commit()
+    def update(self, project):
+        bd.session.commit()
 
     def delete(self, project):
-        db.session.delete(project)
-        self.commit()
-
-    def commit(self):
-        db.session.commit()
+        bd.session.delete(project)
+        bd.session.commit()
