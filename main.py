@@ -5,12 +5,14 @@ from routes.employee import employee
 from routes.job import job
 from models.project_model import bd
 from flask_migrate import Migrate
-
+import logging
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/Komp/PycharmProjects/qulix/instance/database.db'
 bd.init_app(app)
 
 migrate = Migrate(app, bd)
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 app.register_blueprint(project)
 app.register_blueprint(task)
