@@ -1,0 +1,64 @@
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
+INFO:root:Project created: Название проекта
+INFO:root:POST /create_project - 200
+INFO:root:Project created: Название проекта
+INFO:root:POST /create_project - 200
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
+ERROR:main:Exception on /create_project [POST]
+Traceback (most recent call last):
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\routes\project.py", line 54, in create_project
+    planned_end_date = datetime.strptime(data['planned_end_date'], '%Y-%m-%d').date()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 568, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data '2023, 6, 30' does not match format '%Y-%m-%d'
+INFO:root:POST /create_project - 500
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
+ERROR:main:Exception on /create_project [POST]
+Traceback (most recent call last):
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\PycharmProjects\qulix\routes\project.py", line 54, in create_project
+    planned_end_date = datetime.strptime(data['planned_end_date'], '%Y-%m-%d').date()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 568, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Komp\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data 'datetime.date(2023, 6, 30)' does not match format '%Y-%m-%d'
+INFO:root:POST /create_project - 500
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
+INFO:root:Project created: Test Project
+INFO:root:POST /create_project - 200
