@@ -1,6 +1,7 @@
-from models.project_model import bd
 from models.project_model import Project
+from models.project_model import bd
 from . import AbstractRepository
+
 
 class ProjectRepository(AbstractRepository):
     def get_all(self):
@@ -17,5 +18,8 @@ class ProjectRepository(AbstractRepository):
         bd.session.commit()
 
     def delete(self, project):
-        bd.session.delete(project)
-        bd.session.commit()
+        if project:
+            bd.session.delete(project)
+            bd.session.commit()
+            return True
+        return False

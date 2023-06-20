@@ -1,6 +1,7 @@
-from models.job_model import bd
 from models.job_model import Job
+from models.job_model import bd
 from . import AbstractRepository
+
 
 class JobRepository(AbstractRepository):
     def get_all(self):

@@ -1,5 +1,5 @@
-from models.task_model import bd
 from models.task_model import Task
+from models.task_model import bd
 from . import AbstractRepository
 
 

@@ -1,5 +1,5 @@
-from models.employee_model import bd
 from models.employee_model import Employee
+from models.employee_model import bd
 from . import AbstractRepository
 
 
