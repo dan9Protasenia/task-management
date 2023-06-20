@@ -51,6 +51,7 @@ def create_project(data):
 
     return project
 
+
 def update_project(project_id, data):
     project = repository.get_by_id(project_id)
 
@@ -66,9 +67,12 @@ def update_project(project_id, data):
     return project
 
 def delete_project(project_id):
-    result = repository.delete(project_id)
+    project = repository.get_by_id(project_id)
+    if project:
+        result = repository.delete(project)
+        return result
+    return False
 
-    return result
 
 def project_to_dict(project):
     project_dict = {

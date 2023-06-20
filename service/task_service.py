@@ -3,6 +3,7 @@ from repository.task_repository import TaskRepository, Task
 
 repository = TaskRepository()
 
+
 def get_all_tasks():
     tasks = repository.get_all()
     task_list = []
@@ -19,12 +20,13 @@ def get_all_tasks():
         task_list.append(task_data)
     return task_list
 
+
 def create_task(data):
     name = data['name']
     priority = data['priority']
     start_date = date.today()
     planned_end_date = date.today()
-    actual_end_date = date.today()
+    actual_end_date = None  # Исправлено: установка значения по умолчанию None
     status = data['status']
 
     task = Task(
@@ -45,6 +47,9 @@ def update_task(task_id, data):
     task.status = data['status']
     repository.update(task)
 
+    return task
+
 def delete_task(task_id):
     task = repository.get_by_id(task_id)
     repository.delete(task)
+    return task

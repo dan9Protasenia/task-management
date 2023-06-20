@@ -2,6 +2,7 @@ from repository.job_repository import JobRepository, Job
 
 repository = JobRepository()
 
+
 def get_all_jobs():
     jobs = repository.get_all()
     job_list = []
@@ -13,6 +14,7 @@ def get_all_jobs():
         job_list.append(job_data)
     return job_list
 
+
 def create_job(data):
     name_position = data['name_position']
     tariff_rate = data['tariff_rate']
@@ -23,6 +25,8 @@ def create_job(data):
     )
 
     repository.create(job)
+    return [job]
+
 
 def update_job(job_id, data):
     job = repository.get_by_id(job_id)
@@ -30,6 +34,12 @@ def update_job(job_id, data):
     job.tariff_rate = data['tariff_rate']
     repository.update(job)
 
+    return job
+
+
 def delete_job(job_id):
     job = repository.get_by_id(job_id)
-    repository.delete(job)
+    if job:
+        repository.delete(job)
+        return True
+    return False
