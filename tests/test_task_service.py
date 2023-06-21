@@ -1,6 +1,18 @@
 import unittest
 from datetime import date
 
+from constants import (
+    STATUS_IN_PROGRESS,
+    STATUS_COMPLETED,
+    TASK_NEW,
+    TASK_UPDATED,
+    PRIORITY_HIGH,
+    PRIORITY_MEDIUM,
+    PRIORITY_LOW,
+    TASK1,
+    TASK2,
+    TASK3
+)
 from main import app, bd
 from models.task_model import Task
 from repository.task_repository import TaskRepository
@@ -23,28 +35,28 @@ class TaskServiceTestCase(unittest.TestCase):
 
     def test_get_all_tasks(self):
         task1 = Task(
-            name='Task 1',
-            priority='High',
+            name=TASK1,
+            priority=PRIORITY_HIGH,
             start_date=date.today(),
             planned_end_date=date.today(),
             actual_end_date=None,
-            status='In Progress'
+            status=STATUS_IN_PROGRESS
         )
         task2 = Task(
-            name='Task 2',
-            priority='Medium',
+            name=TASK2,
+            priority=PRIORITY_MEDIUM,
             start_date=date.today(),
             planned_end_date=date.today(),
             actual_end_date=None,
-            status='In Progress'
+            status=STATUS_IN_PROGRESS
         )
         task3 = Task(
-            name='Task 3',
-            priority='Low',
+            name=TASK3,
+            priority=PRIORITY_LOW,
             start_date=date.today(),
             planned_end_date=date.today(),
             actual_end_date=None,
-            status='In Progress'
+            status=STATUS_IN_PROGRESS
         )
         self.repository.create(task1)
         self.repository.create(task2)
@@ -53,63 +65,64 @@ class TaskServiceTestCase(unittest.TestCase):
         tasks = get_all_tasks()
 
         self.assertEqual(len(tasks), 3)
-        self.assertEqual(tasks[0]['name'], 'Task 1')
-        self.assertEqual(tasks[0]['priority'], 'High')
+        self.assertEqual(tasks[0]['name'], TASK1)
+        self.assertEqual(tasks[0]['priority'], PRIORITY_HIGH)
         self.assertEqual(tasks[0]['start_date'], date.today().strftime('%Y-%m-%d'))
         self.assertEqual(tasks[0]['planned_end_date'], date.today().strftime('%Y-%m-%d'))
         self.assertIsNone(tasks[0]['actual_end_date'])
-        self.assertEqual(tasks[0]['status'], 'In Progress')
+        self.assertEqual(tasks[0]['status'], STATUS_IN_PROGRESS)
 
     def test_create_task(self):
         data = {
-            'name': 'New Task',
-            'priority': 'High',
-            'status': 'In Progress'
+            'name': TASK_NEW,
+            'priority': PRIORITY_HIGH,
+            'status': STATUS_IN_PROGRESS
         }
 
         create_task(data)
         task = self.repository.get_all()[0]
 
         self.assertIsNotNone(task.id)
-        self.assertEqual(task.name, 'New Task')
-        self.assertEqual(task.priority, 'High')
+        self.assertEqual(task.name, TASK_NEW)
+        self.assertEqual(task.priority, PRIORITY_HIGH)
         self.assertEqual(task.start_date, date.today())
         self.assertEqual(task.planned_end_date, date.today())
         self.assertIsNone(task.actual_end_date)
-        self.assertEqual(task.status, 'In Progress')
+        self.assertEqual(task.status, STATUS_IN_PROGRESS
+                         )
 
     def test_update_task(self):
         task = Task(
-            name='Task 1',
-            priority='High',
+            name=TASK1,
+            priority=PRIORITY_HIGH,
             start_date=date.today(),
             planned_end_date=date.today(),
             actual_end_date=None,
-            status='In Progress'
+            status=STATUS_IN_PROGRESS
         )
         self.repository.create(task)
 
         data = {
-            'name': 'Updated Task',
-            'priority': 'Medium',
-            'status': 'Completed'
+            'name': TASK_UPDATED,
+            'priority': PRIORITY_MEDIUM,
+            'status': STATUS_COMPLETED
         }
 
         update_task(task.id, data)
         updated_task = self.repository.get_by_id(task.id)
 
-        self.assertEqual(updated_task.name, 'Updated Task')
-        self.assertEqual(updated_task.priority, 'Medium')
-        self.assertEqual(updated_task.status, 'Completed')
+        self.assertEqual(updated_task.name, TASK_UPDATED)
+        self.assertEqual(updated_task.priority, PRIORITY_MEDIUM)
+        self.assertEqual(updated_task.status, STATUS_COMPLETED)
 
     def test_delete_task(self):
         task_data = {
-            'name': 'Test Task',
-            'priority': 'High',
+            'name': TASK1,
+            'priority': PRIORITY_HIGH,
             'start_date': date.today(),
             'planned_end_date': date.today(),
             'actual_end_date': None,
-            'status': 'In Progress'
+            'status': STATUS_IN_PROGRESS
         }
         task = Task(**task_data)
         self.repository.create(task)
