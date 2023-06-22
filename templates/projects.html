@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 30px;
+            margin-top: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        li {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .project-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .project-details {
+            font-size: 14px;
+            color: #666;
+            display: none;
+        }
+
+        .project-description {
+            font-style: italic;
+            color: #888;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .project-date {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .delete-button {
+            background-color: transparent;
+            color: #f44336;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            font-size: 18px;
+            line-height: 1;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f5f5f5;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 999;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .navigation a.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .overdue-task {
+            background-color: red;
+        }
+
+        .due-soon-task {
+            background-color: yellow;
+        }
+        .add-task-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <a href="/projects" class="active">Проекты</a>
+        <a href="/employee">Сотрудники</a>
+        <a href="/job">Должность</a>
+    </div>
+    <h1>Projects</h1>
+    <ul id="projectList"></ul>
+
+    <script>
+        var projects = JSON.parse('{{ projects_json|safe }}');
+
+        var projectList = document.getElementById('projectList');
+        for (var i = 0; i < projects.length; i++) {
+            var project = projects[i];
+
+            var listItem = document.createElement('li');
+
+            // Mark overdue tasks
+            if (project.status !== 'Завершено' && project.status !== 'Отложено' && project.planned_end_date < Date.now()) {
+                listItem.classList.add('overdue-task');
+            }
+            // Mark tasks due within a week
+            else if (project.status !== 'Завершено' && project.status !== 'Отложено' && project.planned_end_date - (7 * 24 * 60 * 60 * 1000) < Date.now()) {
+                listItem.classList.add('due-soon-task');
+            }
+
+            var projectName = document.createElement('div');
+            projectName.classList.add('project-name');
+            projectName.textContent = project.name;
+
+            var projectDetails = document.createElement('div');
+            projectDetails.classList.add('project-details');
+            projectDetails.innerHTML = 'Short Name: ' + project.short_name + '<br>' +
+                                       'Status: ' + project.status + '<br>' +
+                                       'Start Date: ' + project.start_date + '<br>' +
+                                       'Planned End Date: ' + project.planned_end_date + '<br>' +
+                                       'Actual End Date: ' + project.actual_end_date + '<br>' +
+                                       'Cost: ' + project.cost;
+
+            var projectDescription = document.createElement('div');
+            projectDescription.classList.add('project-description');
+            projectDescription.textContent = project.description;
+
+            var deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'Delete';
+
+            deleteButton.addEventListener('click', function(event) {
+                event.stopPropagation(); // Предотвращение всплытия события, чтобы не срабатывало событие click для родительского элемента
+                var projectId = project.id;
+                deleteProject(projectId);
+            });
+
+            listItem.appendChild(projectName);
+            listItem.appendChild(projectDetails);
+            listItem.appendChild(projectDescription);
+            listItem.appendChild(deleteButton);
+            projectList.appendChild(listItem);
+
+            // Add tasks button
+            var tasksButton = document.createElement('a');
+            tasksButton.href = '/tasks/' + project.id;
+            tasksButton.classList.add('navigation-link');
+            tasksButton.textContent = 'Задачи';
+
+            listItem.appendChild(tasksButton);
+
+            listItem.addEventListener('click', function() {
+                var details = this.getElementsByClassName('project-details')[0];
+                var description = this.getElementsByClassName('project-description')[0];
+                var deleteButton = this.getElementsByClassName('delete-button')[0];
+
+                if (details.style.display === 'block') {
+                    details.style.display = 'none';
+                    description.style.display = 'none';
+                    deleteButton.style.display = 'none';
+                } else {
+                    details.style.display = 'block';
+                    description.style.display = 'block';
+                    deleteButton.style.display = 'block';
+                }
+            });
+        }
+
+        function deleteProject(projectId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('DELETE', '/delete_project/' + projectId);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Успешное удаление проекта
+                        alert('Проект успешно удален');
+
+                        location.reload(); // Пример обновления списка проектов
+                    } else {
+                        alert('Не удалось удалить проект');
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+    <div class="create-button">
+        <a href="/create_project">Создание проекта</a>
+    </div>
+</body>
+</html>

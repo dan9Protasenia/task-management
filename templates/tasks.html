@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            max-width: 800px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .create-button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .create-button a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .delete-button {
+            background-color: transparent;
+            color: #f44336;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+            margin: 0 4px;
+            display: none;
+        }
+        .delete-button:hover {
+            color: #d32f2f;
+        }
+        .edit-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .task-name {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .task-details {
+            display: none;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        .task-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Задачи</h1>
+    <div id="taskList"></div>
+<!-- Пример шаблона со списком задач -->
+<ul>
+  {% for task in tasks %}
+  <li>
+    <!-- Вставка идентификатора задачи в атрибут data-task-id -->
+    <span data-task-id="{{ task.id }}">{{ task.name }}</span>
+    <button onclick="deleteTask({{ task.id }})">Удалить</button>
+  </li>
+  {% endfor %}
+</ul>
+
+<script>
+  var tasks = JSON.parse('{{ tasks_json|safe }}');
+
+  var taskList = document.getElementById('taskList');
+  for (var i = 0; i < tasks.length; i++) {
+    (function() {
+      var task = tasks[i];
+
+      var listItem = document.createElement('div');
+      listItem.classList.add('task');
+
+      var taskName = document.createElement('div');
+      taskName.classList.add('task-name');
+      taskName.innerHTML = '<span>' + task.name + '</span>';
+
+      var taskDetails = document.createElement('div');
+      taskDetails.classList.add('task-details');
+      taskDetails.innerHTML = '<p><strong>Name:</strong> ' + task.name + '</p>' +
+        '<p><strong>Priority:</strong> ' + task.priority + '</p>' +
+        '<p><strong>Start Date:</strong> ' + task.start_date + '</p>' +
+        '<p><strong>Planned End Date:</strong> ' + task.planned_end_date + '</p>' +
+        '<p><strong>Actual End Date:</strong> ' + task.actual_end_date + '</p>' +
+        '<p><strong>Status:</strong> ' + task.status + '</p>';
+
+      var deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.classList.add('delete-button');
+      deleteButton.textContent = 'Delete';
+
+      deleteButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        var taskId = task.id;
+        deleteTask(taskId);
+      });
+
+      taskName.addEventListener('click', function() {
+        var deleteButton = this.parentElement.getElementsByClassName('delete-button')[0];
+        var taskDetails = this.parentElement.getElementsByClassName('task-details')[0];
+
+        if (taskDetails.style.display === 'block') {
+          deleteButton.style.display = 'none';
+          taskDetails.style.display = 'none';
+        } else {
+          deleteButton.style.display = 'block';
+          taskDetails.style.display = 'block';
+        }
+      });
+
+      listItem.appendChild(taskName);
+      listItem.appendChild(deleteButton);
+      listItem.appendChild(taskDetails);
+      taskList.appendChild(listItem);
+    })();
+  }
+
+  function deleteTask(taskId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/delete_task/' + taskId);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          alert('Задача успешно удалена');
+          location.reload();
+        } else {
+          alert('Не удалось удалить задачу');
+        }
+      }
+    };
+    xhr.send();
+  }
+</script>
+
+    <div class="create-button">
+        <a href="/create_task">Создание задачи</a>
+    </div>
+</body>
+</html>
