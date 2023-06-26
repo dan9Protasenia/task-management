@@ -9,3 +9,5 @@ class Task(bd.Model):
     planned_end_date = bd.Column(bd.Date, nullable=False)
     actual_end_date = bd.Column(bd.Date, nullable=True)
     status = bd.Column(bd.String(20), nullable=False)
+    is_locked = bd.Column(bd.Boolean, nullable=False, default=False)
+    project_id = bd.Column(bd.Integer, bd.ForeignKey('project.id'))
