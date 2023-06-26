@@ -11,3 +11,4 @@ class Project(bd.Model):
     planned_end_date = bd.Column(bd.Date, nullable=False)
     actual_end_date = bd.Column(bd.Date, nullable=True)
     cost = bd.Column(bd.Float, nullable=False)
+    is_locked = bd.Column(bd.Boolean, nullable=False, default=False)
