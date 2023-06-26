@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from sqlalchemy import or_
 
 from service.employee_service import get_all_employees, create_employee, update_employee, delete_employee
 
@@ -7,7 +8,13 @@ employee = Blueprint('employee', __name__)
 
 @employee.route('/employees', methods=['GET'])
 def get_employees():
-    employees = get_all_employees()
+    search_query = request.args.get('search_query')
+
+    if search_query:
+        employees = get_all_employees(search_query)
+    else:
+        employees = get_all_employees()
+
     return jsonify(employees=employees)
 
 
