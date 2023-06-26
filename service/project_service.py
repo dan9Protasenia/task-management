@@ -1,8 +1,13 @@
-from repository.project_repository import ProjectRepository
 from datetime import date, datetime
-from models.project_model import Project
 
+from models.project_model import Project
+from repository.project_repository import ProjectRepository
+from repository.task_repository import TaskRepository
+from service.task_service import task_to_dict
+
+task_repository = TaskRepository()
 repository = ProjectRepository()
+
 
 def get_all_projects():
     projects = repository.get_all()
@@ -14,13 +19,15 @@ def get_all_projects():
             'description': project_data.description,
             'start_date': project_data.start_date.strftime('%Y-%m-%d'),
             'planned_end_date': project_data.planned_end_date.strftime('%Y-%m-%d'),
-            'actual_end_date': project_data.actual_end_date.strftime('%Y-%m-%d') if project_data.actual_end_date else None,
+            'actual_end_date': project_data.actual_end_date.strftime(
+                '%Y-%m-%d') if project_data.actual_end_date else None,
             'cost': project_data.cost,
             'status': project_data.status
         }
         project_list.append(project_dict)
 
     return project_list
+
 
 def create_project(data):
     name = data['name']
@@ -66,11 +73,12 @@ def update_project(project_id, data):
 
     return project
 
+
 def delete_project(project_id):
     project = repository.get_by_id(project_id)
     if project:
         result = repository.delete(project)
-        return result
+        return project
     return False
 
 
@@ -86,3 +94,12 @@ def project_to_dict(project):
         'status': project.status
     }
     return project_dict
+
+
+def get_project_tasks(project_id):
+    tasks = task_repository.get_all_tasks_by_project(project_id)
+    task_list = []
+    for task in tasks:
+        task_data = task_to_dict(task)
+        task_list.append(task_data)
+    return task_list

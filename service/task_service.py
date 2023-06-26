@@ -1,4 +1,5 @@
 from datetime import date
+
 from repository.task_repository import TaskRepository, Task
 
 repository = TaskRepository()
@@ -21,12 +22,12 @@ def get_all_tasks():
     return task_list
 
 
-def create_task(data):
+def create_task(project_id, data):
     name = data['name']
     priority = data['priority']
     start_date = date.today()
     planned_end_date = date.today()
-    actual_end_date = None  # Исправлено: установка значения по умолчанию None
+    actual_end_date = None
     status = data['status']
 
     task = Task(
@@ -35,10 +36,13 @@ def create_task(data):
         start_date=start_date,
         planned_end_date=planned_end_date,
         actual_end_date=actual_end_date,
-        status=status
+        status=status,
+        project_id=project_id
     )
 
     repository.create(task)
+    return task
+
 
 def update_task(task_id, data):
     task = repository.get_by_id(task_id)
@@ -49,7 +53,20 @@ def update_task(task_id, data):
 
     return task
 
+
 def delete_task(task_id):
     task = repository.get_by_id(task_id)
     repository.delete(task)
     return task
+
+
+def task_to_dict(task):
+    task_dict = {
+        'name': task.name,
+        'priority': task.priority,
+        'start_date': task.start_date.strftime('%Y-%m-%d'),
+        'planned_end_date': task.planned_end_date.strftime('%Y-%m-%d'),
+        'actual_end_date': task.actual_end_date.strftime('%Y-%m-%d') if task.actual_end_date else None,
+        'status': task.status
+    }
+    return task_dict
