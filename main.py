@@ -1,11 +1,14 @@
+import logging
+
 from flask import Flask
-from routes.project import project
-from routes.task import task
+from flask_migrate import Migrate
+
+from models.project_model import bd
 from routes.employee import employee
 from routes.job import job
-from models.project_model import bd
-from flask_migrate import Migrate
-import logging
+from routes.project import project
+from routes.task import task
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/Komp/PycharmProjects/qulix/instance/database.db'
