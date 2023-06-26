@@ -15,9 +15,37 @@ def index():
 
 @project.route('/projects', methods=['GET'])
 def get_projects():
+    name_filter = request.args.get('name')
+    start_date_filter = request.args.get('start_date')
+    end_date_filter = request.args.get('end_date')
+    overdue_filter = request.args.get('overdue')
+
     projects = repository.get_all()
     project_list = []
+
     for project in projects:
+        if name_filter and name_filter.lower() not in project.name.lower():
+            continue
+
+        if start_date_filter:
+            try:
+                start_date_filter = datetime.strptime(start_date_filter, '%Y-%m-%d').date()
+            except ValueError:
+                start_date_filter = None
+            if start_date_filter and project.start_date < start_date_filter:
+                continue
+
+        if end_date_filter:
+            try:
+                end_date_filter = datetime.strptime(end_date_filter, '%Y-%m-%d').date()
+            except ValueError:
+                end_date_filter = None
+            if end_date_filter and project.planned_end_date > end_date_filter:
+                continue
+
+        if overdue_filter == 'true' and project.planned_end_date >= date.today():
+            continue
+
         project_data = {
             'id': project.id,
             'name': project.name,
