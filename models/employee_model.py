@@ -8,3 +8,4 @@ class Employee(bd.Model):
     middle_name = bd.Column(bd.String(50), nullable=True)
     position = bd.Column(bd.String(100), nullable=False)
     is_locked = bd.Column(bd.Boolean, nullable=False, default=False)
+    job_id = bd.Column(bd.Integer, bd.ForeignKey('job.id'), nullable=True)
