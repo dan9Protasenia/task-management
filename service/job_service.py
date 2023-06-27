@@ -12,7 +12,7 @@ def get_all_jobs():
             'name_position': job.name_position,
             'tariff_rate': job.tariff_rate,
             'assigned_employees': get_assigned_employees(job.id),
-            'id':job.id
+            'id': job.id
         }
         job_list.append(job_data)
     return job_list
@@ -28,6 +28,7 @@ def create_job(data):
     )
 
     repository.create(job)
+    job.assigned_employees = get_assigned_employees(job.id)  # Assign employees to the job
     return job
 
 
@@ -36,7 +37,6 @@ def update_job(job_id, data):
     job.name_position = data['name_position']
     job.tariff_rate = data['tariff_rate']
     repository.update(job)
-
     return job
 
 
