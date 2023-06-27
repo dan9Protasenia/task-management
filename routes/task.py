@@ -3,6 +3,7 @@ from datetime import date
 from flask import Blueprint, request, jsonify
 
 from repository.task_repository import TaskRepository, Task
+from service.task_service import get_task_performers, set_task_performers
 
 task = Blueprint('task', __name__)
 repository = TaskRepository()
@@ -120,3 +121,37 @@ def delete_task(project_id, task_id):
     repository.delete(task)
 
     return jsonify(message='Task deleted successfully')
+
+
+@task.route('/task_performers/<int:task_id>', methods=['GET'])
+def get_performers(task_id):
+    performers = get_task_performers(task_id)
+    return jsonify(performers), 200
+
+
+@task.route('/task_performers/<int:task_id>', methods=['POST'])
+def set_performers(task_id):
+    data = request.get_json()
+    performer_ids = data.get('performer_ids', [])
+    if set_task_performers(task_id, performer_ids):
+        return jsonify({'message': 'Performers updated successfully'}), 200
+    return jsonify({'message': 'Failed to update performers'}), 400
+
+@task.route('/task_performers/<int:task_id>/<int:performer_id>', methods=['DELETE'])
+def delete_performers(task_id, performer_id):
+    performers = get_task_performers(task_id)
+    if not performers:
+        return jsonify(message='Performers not found'), 404
+
+    performer_id = int(performer_id)
+    if performer_id in performers:
+        performers.remove(performer_id)
+        if set_task_performers(task_id, performers):
+            return jsonify(message='Performer deleted successfully'), 200
+
+    return jsonify(message='Failed to delete performer'), 400
+
+
+
+
+
