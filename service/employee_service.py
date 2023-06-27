@@ -61,8 +61,8 @@ def delete_employee(employee_id):
 
 def is_employee_assigned_to_task(employee_id):
     task_count = Task.query.filter(Task.performers.any(id=employee_id)).count()
-
     return task_count > 0
+
 
 def get_employees_by_position(position):
     employees = repository.get_all_by_position(position)
