@@ -20,3 +20,9 @@ class JobRepository(AbstractRepository):
     def delete(self, project):
         bd.session.delete(project)
         bd.session.commit()
+
+    def get_employees(self, job_id):
+        job = self.get_by_id(job_id)
+        if job:
+            return job.employees
+        return []
