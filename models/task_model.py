@@ -11,3 +11,9 @@ class Task(bd.Model):
     status = bd.Column(bd.String(20), nullable=False)
     is_locked = bd.Column(bd.Boolean, nullable=False, default=False)
     project_id = bd.Column(bd.Integer, bd.ForeignKey('project.id'))
+    performers = bd.relationship('Employee', secondary='task_performers', backref=bd.backref('tasks', lazy='dynamic'))
+
+class TaskPerformers(bd.Model):
+    __tablename__ = 'task_performers'
+    task_id = bd.Column(bd.Integer, bd.ForeignKey('task.id'), primary_key=True)
+    employee_id = bd.Column(bd.Integer, bd.ForeignKey('employee.id'), primary_key=True)
