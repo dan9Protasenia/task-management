@@ -33,3 +33,6 @@ class EmployeeRepository(AbstractRepository):
             bd.session.commit()
             return True
         return False
+
+    def get_all_by_position(self, position):
+        return Employee.query.filter_by(position=position, is_locked=False).all()
