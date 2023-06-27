@@ -13,6 +13,7 @@ class Task(bd.Model):
     project_id = bd.Column(bd.Integer, bd.ForeignKey('project.id'))
     performers = bd.relationship('Employee', secondary='task_performers', backref=bd.backref('tasks', lazy='dynamic'))
 
+
 class TaskPerformers(bd.Model):
     __tablename__ = 'task_performers'
     task_id = bd.Column(bd.Integer, bd.ForeignKey('task.id'), primary_key=True)
