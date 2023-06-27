@@ -1,8 +1,8 @@
 import logging
-
+import sqlalchemy
 from flask import Flask
 from flask_migrate import Migrate
-
+from sqlalchemy_utils import create_database
 from models.project_model import bd
 from routes.employee import employee
 from routes.job import job
@@ -11,7 +11,15 @@ from routes.task import task
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/Komp/PycharmProjects/qulix/instance/database.db'
+
+database_uri = 'sqlite:///C:/Users/Komp/PycharmProjects/qulix/instance/database.db'
+
+# Создание новой базы данных
+create_database(database_uri)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+  # Опционально, для отключения предупреждений
+
 bd.init_app(app)
 
 migrate = Migrate(app, bd)
