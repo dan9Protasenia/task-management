@@ -9,21 +9,34 @@ task_repository = TaskRepository()
 repository = ProjectRepository()
 
 
-def get_all_projects():
+def get_all_projects(name_filter=None, start_date_filter=None, end_date_filter=None, overdue_filter=None):
     projects = repository.get_all()
     project_list = []
+
     for project_data in projects:
-        project_dict = {
-            'name': project_data.name,
-            'short_name': project_data.short_name,
-            'description': project_data.description,
-            'start_date': project_data.start_date.strftime('%Y-%m-%d'),
-            'planned_end_date': project_data.planned_end_date.strftime('%Y-%m-%d'),
-            'actual_end_date': project_data.actual_end_date.strftime(
-                '%Y-%m-%d') if project_data.actual_end_date else None,
-            'cost': project_data.cost,
-            'status': project_data.status
-        }
+        if name_filter and name_filter.lower() not in project_data.name.lower():
+            continue
+
+        if start_date_filter:
+            try:
+                start_date_filter_date = datetime.strptime(start_date_filter, '%Y-%m-%d').date()
+            except ValueError:
+                start_date_filter_date = None
+            if start_date_filter_date and project_data.start_date < start_date_filter_date:
+                continue
+
+        if end_date_filter:
+            try:
+                end_date_filter_date = datetime.strptime(end_date_filter, '%Y-%m-%d').date()
+            except ValueError:
+                end_date_filter_date = None
+            if end_date_filter_date and project_data.planned_end_date > end_date_filter_date:
+                continue
+
+        if overdue_filter == 'true' and project_data.planned_end_date >= date.today():
+            continue
+
+        project_dict = project_to_dict(project_data)
         project_list.append(project_dict)
 
     return project_list
@@ -77,7 +90,7 @@ def update_project(project_id, data):
 def delete_project(project_id):
     project = repository.get_by_id(project_id)
     if project:
-        result = repository.delete(project)
+        repository.delete(project)
         return project
     return False
 
