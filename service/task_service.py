@@ -70,3 +70,20 @@ def task_to_dict(task):
         'status': task.status
     }
     return task_dict
+
+def get_task_performers(task_id):
+    performers = repository.get_task_performers(task_id)
+    performer_list = []
+    for performer in performers:
+        performer_data = {
+            'id': performer.id,
+            'last_name': performer.last_name,
+            'first_name': performer.first_name,
+            'middle_name': performer.middle_name,
+            'position': performer.position
+        }
+        performer_list.append(performer_data)
+    return performer_list
+
+def set_task_performers(task_id, performer_ids):
+    return repository.set_task_performers(task_id, performer_ids)
