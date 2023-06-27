@@ -91,11 +91,10 @@
     </form>
 
     <script>
-        // Обработчик отправки формы
-        document.getElementById("createProjectForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Предотвращаем отправку формы
 
-            // Получаем значения полей формы
+        document.getElementById("createProjectForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
             var name = document.getElementById("name").value;
             var shortName = document.getElementById("short_name").value;
             var description = document.getElementById("description").value;
@@ -103,7 +102,7 @@
             var status = document.getElementById("status").value;
             var plannedEndDate = document.getElementById("planned_end_date").value;
 
-            // Создаем объект с данными проекта
+
             var projectData = {
                 name: name,
                 short_name: shortName,
