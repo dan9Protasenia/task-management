@@ -3,6 +3,7 @@ from models.employee_model import bd
 from . import AbstractRepository
 from sqlalchemy import or_
 
+
 class EmployeeRepository(AbstractRepository):
     def get_all(self, search_query=None):
         if search_query:
