@@ -50,7 +50,6 @@ def update_task(task_id, data):
     task.priority = data['priority']
     task.status = data['status']
     repository.update(task)
-
     return task
 
 
@@ -71,6 +70,7 @@ def task_to_dict(task):
     }
     return task_dict
 
+
 def get_task_performers(task_id):
     performers = repository.get_task_performers(task_id)
     performer_list = []
@@ -84,6 +84,7 @@ def get_task_performers(task_id):
         }
         performer_list.append(performer_data)
     return performer_list
+
 
 def set_task_performers(task_id, performer_ids):
     return repository.set_task_performers(task_id, performer_ids)
