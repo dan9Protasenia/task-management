@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 40px;
+            width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea,
+        select,
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Редактирование проекта</h1>
+    <form method="POST" action="/edit_project/{{ project.id }}">
+        <label for="name">Название проекта:</label>
+        <input type="text" id="name" name="name" value="{{ project.name }}" required>
+
+        <label for="short_name">Короткое название проекта:</label>
+        <input type="text" id="short_name" name="short_name" value="{{ project.short_name }}" required>
+
+        <label for="description">Описание:</label><br>
+        <textarea id="description" name="description">{{ project.description }}</textarea>
+
+        <label for="cost">Стоимость проекта:</label>
+        <input type="number" id="cost" name="cost" value="{{ project.cost }}" required>
+
+        <label for="status">Статус проекта:</label>
+        <select id="status" name="status" required>
+            <option value="Запланирован" {% if project.status == 'Запланирован' %} selected {% endif %}>Запланирован</option>
+            <option value="В работе" {% if project.status == 'В работе' %} selected {% endif %}>В работе</option>
+            <option value="Завершено" {% if project.status == 'Завершено' %} selected {% endif %}>Завершено</option>
+            <option value="Отложено" {% if project.status == 'Отложено' %} selected {% endif %}>Отложено</option>
+        </select>
+
+        <label for="planned_end_date">Планируемая дата завершения:</label>
+        <input type="date" id="planned_end_date" name="planned_end_date" value="{{ project.planned_end_date.strftime('%Y-%m-%d') }}" required>
+
+        <input type="submit" value="Сохранить изменения">
+    </form>
+</body>
+</html>
