@@ -164,7 +164,7 @@
             deleteButton.textContent = 'Delete';
 
             deleteButton.addEventListener('click', function(event) {
-                event.stopPropagation(); // Предотвращение всплытия события, чтобы не срабатывало событие click для родительского элемента
+                event.stopPropagation();
                 var projectId = project.id;
                 deleteProject(projectId);
             });
@@ -177,9 +177,17 @@
 
             // Add tasks button
             var tasksButton = document.createElement('a');
-            tasksButton.href = '/tasks/' + project.id;
-            tasksButton.classList.add('navigation-link');
+            tasksButton.href = '/tasks/' + project.id + '/';
+            tasksButton.classList.add('tasks-button');
             tasksButton.textContent = 'Задачи';
+            tasksButton.setAttribute('data-project-id', project.id);
+
+            tasksButton.addEventListener('click', (function(projectId) {
+                return function(event) {
+                    event.stopPropagation();
+                    window.location.href = '/tasks/' + projectId;
+                }
+            })(project.id));
 
             listItem.appendChild(tasksButton);
 
@@ -206,9 +214,7 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Успешное удаление проекта
                         alert('Проект успешно удален');
-
                         location.reload(); // Пример обновления списка проектов
                     } else {
                         alert('Не удалось удалить проект');
