@@ -7,4 +7,3 @@ class Job(bd.Model):
     tariff_rate = bd.Column(bd.Integer, nullable=False)
     is_locked = bd.Column(bd.Boolean, nullable=False, default=False)
     employees = bd.relationship('Employee', backref='job', lazy=True)
-
