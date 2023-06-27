@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, request, jsonify
 
-from service.job_service import get_all_jobs, create_job, update_job, delete_job
+from service.job_service import get_all_jobs, create_job, update_job, delete_job, get_assigned_employees
 
 job = Blueprint('job', __name__)
 
@@ -23,18 +23,30 @@ def after_request(response):
 @job.route('/create_job', methods=['POST'])
 def create_job_route():
     data = request.get_json()
-    create_job(data)
-    return jsonify(message='Job created successfully')
+    job = create_job(data)
+    if job:
+        job_data = {
+            'name_position': job.name_position,
+            'tariff_rate': job.tariff_rate,
+            'assigned_employees': get_assigned_employees(job.id),
+            'id': job.id
+        }
+        return jsonify(message='Job created successfully', job=job_data), 201
+    return jsonify(message='Failed to create job'), 400
 
 
 @job.route('/edit_job/<int:job_id>', methods=['PUT'])
 def edit_job_route(job_id):
     data = request.get_json()
-    update_job(job_id, data)
-    return jsonify(message='Job updated successfully')
+    job = update_job(job_id, data)
+    if job:
+        return jsonify(message='Job updated successfully', job=job)
+    return jsonify(message='Job not found'), 404
 
 
 @job.route('/delete_job/<int:job_id>', methods=['DELETE'])
 def delete_job_route(job_id):
-    delete_job(job_id)
-    return jsonify(message='Job deleted successfully')
+    success = delete_job(job_id)
+    if success:
+        return jsonify(message='Job deleted successfully')
+    return jsonify(message='Job not found'), 404
