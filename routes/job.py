@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, request, jsonify
 
-from service.job_service import get_all_jobs, create_job, update_job, delete_job, get_assigned_employees
+from service.job_service import get_all_jobs, create_job, update_job, delete_job
 
 job = Blueprint('job', __name__)
 
@@ -28,7 +28,7 @@ def create_job_route():
         job_data = {
             'name_position': job.name_position,
             'tariff_rate': job.tariff_rate,
-            'assigned_employees': get_assigned_employees(job.id),
+            'assigned_employees': job.assigned_employees,
             'id': job.id
         }
         return jsonify(message='Job created successfully', job=job_data), 201
