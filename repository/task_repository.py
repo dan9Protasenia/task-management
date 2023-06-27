@@ -1,7 +1,7 @@
+from models.employee_model import Employee
 from models.task_model import Task
 from models.task_model import bd
 from . import AbstractRepository
-from models.employee_model import Employee
 
 
 class TaskRepository(AbstractRepository):
@@ -17,7 +17,6 @@ class TaskRepository(AbstractRepository):
     def create(self, task):
         bd.session.add(task)
         bd.session.commit()
-
 
     def update(self, task):
         bd.session.commit()
