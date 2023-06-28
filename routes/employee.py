@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 
 from service.employee_service import get_all_employees, create_employee, update_employee, delete_employee, \
     get_employees_by_position
-from service.job_service import get_employees_by_job
 
 employee = Blueprint('employee', __name__)
 
@@ -49,10 +48,4 @@ def delete_employee_route(employee_id):
 def get_employees_by_position_route():
     position = request.args.get('position')
     employees = get_employees_by_position(position)
-    return jsonify(employees=employees)
-
-
-@employee.route('/employees_by_job/<int:job_id>', methods=['GET'])
-def get_employees_by_job_route(job_id):
-    employees = get_employees_by_job(job_id)
     return jsonify(employees=employees)
