@@ -1,5 +1,5 @@
-from models.employee_model import Employee
 from repository.job_repository import JobRepository, Job
+from service.employee_service import get_assigned_employees
 
 repository = JobRepository()
 
@@ -28,7 +28,7 @@ def create_job(data):
     )
 
     repository.create(job)
-    job.assigned_employees = get_assigned_employees(job.id)  # Assign employees to the job
+    job.assigned_employees = get_assigned_employees(job.id)
     return job
 
 
@@ -48,31 +48,3 @@ def delete_job(job_id):
     return False
 
 
-def get_assigned_employees(job_id):
-    employees = Employee.query.filter(Employee.position == job_id).all()
-    employee_list = []
-    for employee in employees:
-        employee_data = {
-            'last_name': employee.last_name,
-            'first_name': employee.first_name,
-            'middle_name': employee.middle_name,
-            'position': employee.position,
-            'id': employee.id
-        }
-        employee_list.append(employee_data)
-    return employee_list
-
-
-def get_employees_by_job(job_id):
-    employees = repository.get_employees(job_id)
-    employee_list = []
-    for employee in employees:
-        employee_data = {
-            'last_name': employee.last_name,
-            'first_name': employee.first_name,
-            'middle_name': employee.middle_name,
-            'position': employee.position,
-            'id': employee.id
-        }
-        employee_list.append(employee_data)
-    return employee_list
