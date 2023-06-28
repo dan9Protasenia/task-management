@@ -1,4 +1,5 @@
 import logging
+import os
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -12,7 +13,8 @@ from routes.task import task
 
 app = Flask(__name__)
 
-database_uri = 'sqlite:///C:/Users/Komp/PycharmProjects/qulix/instance/database.db'
+database_filename = 'instance/database.db'
+database_uri = 'sqlite:///' + os.path.abspath(database_filename)
 
 create_database(database_uri)
 
