@@ -88,3 +88,7 @@ def get_task_performers(task_id):
 
 def set_task_performers(task_id, performer_ids):
     return repository.set_task_performers(task_id, performer_ids)
+
+def is_employee_assigned_to_task(employee_id):
+    task_count = Task.query.filter(Task.performers.any(id=employee_id)).count()
+    return task_count > 0
