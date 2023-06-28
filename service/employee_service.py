@@ -1,5 +1,5 @@
-from models.task_model import Task
 from repository.employee_repository import EmployeeRepository, Employee
+from service.task_service import is_employee_assigned_to_task
 
 repository = EmployeeRepository()
 
@@ -59,13 +59,23 @@ def delete_employee(employee_id):
     return False, 'Employee not found'
 
 
-def is_employee_assigned_to_task(employee_id):
-    task_count = Task.query.filter(Task.performers.any(id=employee_id)).count()
-    return task_count > 0
-
-
 def get_employees_by_position(position):
     employees = repository.get_all_by_position(position)
+    employee_list = []
+    for employee in employees:
+        employee_data = {
+            'last_name': employee.last_name,
+            'first_name': employee.first_name,
+            'middle_name': employee.middle_name,
+            'position': employee.position,
+            'id': employee.id
+        }
+        employee_list.append(employee_data)
+    return employee_list
+
+
+def get_assigned_employees(job_id):
+    employees = Employee.query.filter(Employee.position == job_id).all()
     employee_list = []
     for employee in employees:
         employee_data = {
