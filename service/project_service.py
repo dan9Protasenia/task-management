@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date,datetime
 
 from models.project_model import Project
 from repository.project_repository import ProjectRepository
@@ -9,12 +9,22 @@ task_repository = TaskRepository()
 repository = ProjectRepository()
 
 
+def get_project(project_id):
+    project = repository.get_by_id(project_id)
+    if project:
+        project_dict = project_to_dict(project)
+        project_dict['id'] = project.id
+        return project_dict
+    return None
+
+
 def get_all_projects(name_filter=None, start_date_filter=None, end_date_filter=None, overdue_filter=None):
     projects = repository.get_all()
     project_list = []
 
     for project_data in projects:
-        if name_filter and name_filter.lower() not in project_data.name.lower():
+        if name_filter is not None and isinstance(name_filter,
+                                                  str) and name_filter.lower() not in project_data.name.lower():
             continue
 
         if start_date_filter:
@@ -37,6 +47,7 @@ def get_all_projects(name_filter=None, start_date_filter=None, end_date_filter=N
             continue
 
         project_dict = project_to_dict(project_data)
+        project_dict['id'] = project_data.id
         project_list.append(project_dict)
 
     return project_list
@@ -72,6 +83,9 @@ def create_project(data):
     return project
 
 
+from datetime import datetime
+
+
 def update_project(project_id, data):
     project = repository.get_by_id(project_id)
 
@@ -79,7 +93,13 @@ def update_project(project_id, data):
     project.short_name = data['short_name']
     project.description = data['description']
     project.cost = float(data['cost'])
-    project.status = data['status']
+
+    if project.status != 'Завершено' and data['status'] == 'Завершено':
+        project.status = 'Завершено'
+        project.actual_end_date = datetime.now().date()
+    else:
+        project.status = data['status']
+
     project.planned_end_date = datetime.strptime(data['planned_end_date'], '%Y-%m-%d').date()
 
     repository.update(project)
