@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 from service.project_service import (
     get_all_projects,
@@ -6,6 +6,7 @@ from service.project_service import (
     update_project,
     delete_project,
     get_project_tasks,
+    get_project
 )
 
 project = Blueprint('project', __name__)
@@ -26,21 +27,32 @@ def get_projects():
     projects = get_all_projects(name_filter=name_filter, start_date_filter=start_date_filter,
                                 end_date_filter=end_date_filter, overdue_filter=overdue_filter)
 
-    return jsonify(projects=projects)
+    if request.headers.get('Accept') == 'application/json':
+        return jsonify(projects=projects)
+    else:
+        return render_template('projects.html', projects=projects)
 
 
-@project.route('/create_project', methods=['POST'])
+@project.route('/create_project', methods=['POST', 'GET'])
 def create_project_route():
-    data = request.get_json()
-    create_project(data)
-    return jsonify(message='Project created successfully')
+    if request.method == 'POST':
+        data = request.get_json()
+        create_project(data)
+        return jsonify(message='Project created successfully')
+    else:
+        return render_template('create_project.html')
 
 
-@project.route('/edit_project/<int:project_id>', methods=['PUT'])
+@project.route('/edit_project/<int:project_id>', methods=['PUT', 'GET'])
 def edit_project(project_id):
-    data = request.get_json()
-    update_project(project_id, data)
-    return jsonify(message='Project updated successfully')
+    if request.method == 'PUT':
+        data = request.get_json()
+        update_project(project_id, data)
+        return jsonify(message='Project updated successfully')
+    else:
+        project_data = get_project(project_id)
+        return render_template('edit_project.html', project=project_data)
+
 
 
 @project.route('/delete_project/<int:project_id>', methods=['DELETE'])
