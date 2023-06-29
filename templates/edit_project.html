@@ -5,24 +5,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f2f2f2;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
         h1 {
+            text-align: center;
             color: #333;
-            font-size: 24px;
-            margin-bottom: 20px;
+            margin-top: 30px;
         }
 
         form {
+            max-width: 400px;
+            margin: 20px auto;
             background-color: #fff;
+            padding: 30px;
             border-radius: 5px;
-            padding: 40px;
-            width: 400px;
-            margin: 0 auto;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         label {
@@ -39,20 +39,20 @@
         input[type="number"] {
             width: 100%;
             padding: 10px;
-            border-radius: 3px;
             border: 1px solid #ccc;
-            margin-bottom: 20px;
-            font-size: 14px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
         }
 
         input[type="submit"] {
-            background-color: #4caf50;
+            background-color: #4CAF50;
             color: #fff;
             padding: 10px 20px;
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             transition: background-color 0.3s ease;
         }
 
@@ -62,32 +62,62 @@
     </style>
 </head>
 <body>
-    <h1>Редактирование проекта</h1>
-    <form method="POST" action="/edit_project/{{ project.id }}">
-        <label for="name">Название проекта:</label>
+    <h1>Edit Project</h1>
+    <form id="editProjectForm" method="PUT" action="/edit_project/{{ project.id }}">
+        <label for="name">Name:</label>
         <input type="text" id="name" name="name" value="{{ project.name }}" required>
 
-        <label for="short_name">Короткое название проекта:</label>
+        <label for="short_name">Short Name:</label>
         <input type="text" id="short_name" name="short_name" value="{{ project.short_name }}" required>
 
-        <label for="description">Описание:</label><br>
-        <textarea id="description" name="description">{{ project.description }}</textarea>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required>{{ project.description }}</textarea>
 
-        <label for="cost">Стоимость проекта:</label>
+        <label for="planned_end_date">Planned End Date:</label>
+        <input type="date" id="planned_end_date" name="planned_end_date" value="{{ project.planned_end_date }}" required>
+
+        <label for="cost">Cost:</label>
         <input type="number" id="cost" name="cost" value="{{ project.cost }}" required>
 
-        <label for="status">Статус проекта:</label>
+        <label for="status">Status:</label>
         <select id="status" name="status" required>
-            <option value="Запланирован" {% if project.status == 'Запланирован' %} selected {% endif %}>Запланирован</option>
-            <option value="В работе" {% if project.status == 'В работе' %} selected {% endif %}>В работе</option>
-            <option value="Завершено" {% if project.status == 'Завершено' %} selected {% endif %}>Завершено</option>
-            <option value="Отложено" {% if project.status == 'Отложено' %} selected {% endif %}>Отложено</option>
+            <option value="В работе" {% if project.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Завершено" {% if project.status == 'Completed' %}selected{% endif %}>Completed</option>
         </select>
 
-        <label for="planned_end_date">Планируемая дата завершения:</label>
-        <input type="date" id="planned_end_date" name="planned_end_date" value="{{ project.planned_end_date.strftime('%Y-%m-%d') }}" required>
-
-        <input type="submit" value="Сохранить изменения">
+        <input type="submit" value="Update Project">
     </form>
+<script>
+    document.getElementById("editProjectForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var formData = new FormData(form);
+        var jsonData = {};
+
+        formData.forEach(function(value, key) {
+            jsonData[key] = value;
+        });
+
+        fetch("/edit_project/{{ project.id }}", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then(function(response) {
+            if (response.ok) {
+                alert("Project updated successfully");
+                window.location.href = "http://127.0.0.1:5000/projects"; // Redirect to projects page
+            } else {
+                alert("Failed to update project");
+            }
+        })
+        .catch(function(error) {
+            console.log("Error:", error);
+            alert("An error occurred while updating the project");
+        });
+    });
+</script>
 </body>
 </html>
