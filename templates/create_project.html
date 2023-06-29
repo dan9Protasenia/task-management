@@ -91,7 +91,6 @@
     </form>
 
     <script>
-
         document.getElementById("createProjectForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -102,7 +101,6 @@
             var status = document.getElementById("status").value;
             var plannedEndDate = document.getElementById("planned_end_date").value;
 
-
             var projectData = {
                 name: name,
                 short_name: shortName,
@@ -112,7 +110,6 @@
                 planned_end_date: plannedEndDate
             };
 
-            // Отправляем запрос на создание проекта
             fetch("/create_project", {
                 method: "POST",
                 headers: {
@@ -124,19 +121,9 @@
                 return response.json();
             })
             .then(function(data) {
-                if (data.project) {
-                    // Проект успешно создан
+                if (data.message === "Project created successfully") {
                     alert("Проект успешно создан");
-                    // Очищаем поля формы
-                    document.getElementById("name").value = "";
-                    document.getElementById("short_name").value = "";
-                    document.getElementById("description").value = "";
-                    document.getElementById("cost").value = "";
-                    document.getElementById("status").value = "Запланирован";
-                    document.getElementById("planned_end_date").value = "";
-                } else {
-                    // Не удалось создать проект
-                    alert("Не удалось создать проект");
+                    window.location.href = "/projects";
                 }
             })
             .catch(function(error) {
@@ -146,4 +133,3 @@
     </script>
 </body>
 </html>
-
