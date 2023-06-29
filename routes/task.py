@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 from repository.task_repository import Task
 from service.task_service import create_task, update_task, delete_task, get_task_performers, set_task_performers
@@ -66,25 +66,30 @@ def get_tasks(project_id):
         }
         task_list.append(task_data)
 
-    return jsonify(tasks=task_list)
+    if request.headers.get('Accept') == 'application/json':
+        return jsonify(tasks=tasks)
+    else:
+        return render_template('tasks.html', tasks=tasks)
 
 
-@task.route('/create_task', methods=['POST'])
-def create_task_route():
-    data = request.get_json()
-    project_id = data['project_id']
-    create_task(project_id, data)
-    return jsonify(message='Task created successfully')
+@task.route('/create_task/<int:project_id>', methods=['POST', 'GET'])
+def create_task_route(project_id):
+    if request.method == "POST":
+        data = request.get_json()
+        create_task(project_id, data)
+        return jsonify(message='Project created successfully')
+    else:
+        return render_template('create_task.html', project_id=project_id)
 
 
-@task.route('/edit_task/<int:project_id>/<int:task_id>', methods=['PUT'])
+@task.route('/edit_task/<int:task_id>', methods=['PUT'])
 def edit_task_route(task_id):
     data = request.get_json()
     update_task(task_id, data)
     return jsonify(message='Task updated successfully')
 
 
-@task.route('/delete_task/<int:project_id>/<int:task_id>', methods=['DELETE'])
+@task.route('/delete_task/<int:task_id>', methods=['DELETE'])
 def delete_task_route(task_id):
     delete_task(task_id)
     return jsonify(message='Task deleted successfully')
