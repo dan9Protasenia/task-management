@@ -4,228 +4,140 @@
     <title>Projects</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
-            height: calc(100vh - 40px);
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 10vh;
+            text-align: center;
         }
-
         h1 {
             color: #333;
-            text-align: center;
-            font-size: 30px;
-            margin-top: 40px;
+            font-size: 36px;
+            margin-bottom: 40px;
         }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 30px;
-        }
-
-        li {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .project-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .project-details {
-            font-size: 14px;
-            color: #666;
-            display: none;
-        }
-
-        .project-description {
-            font-style: italic;
-            color: #888;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .project-date {
-            color: #666;
-            margin-top: 10px;
-        }
-
-        .delete-button {
-            background-color: transparent;
-            color: #f44336;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            padding: 0;
-            font-size: 18px;
-            line-height: 1;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .delete-button:hover {
-            background-color: #d32f2f;
-        }
-
-        .navigation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #f5f5f5;
-            padding: 10px 0;
-            text-align: center;
-            z-index: 999;
-        }
-
-        .navigation a {
+        a {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #f5f5f5;
-            color: #333;
+            padding: 12px 24px;
+            background-color: #4caf50;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
-            margin-right: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
         }
-
-        .navigation a.active {
-            background-color: #333;
+        a:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 90%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4caf50;
             color: #fff;
         }
-
-        .overdue-task {
-            background-color: red;
+        tr:hover {
+            background-color: #f2f2f2;
         }
-
-        .due-soon-task {
-            background-color: yellow;
+        button {
+            padding: 15px 15px;
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        .add-task-button {
-            margin-top: 20px;
+        button:hover {
+            background-color: #d32f2f;
+        }
+        .edit-button {
+            padding: 15px 15px;
+            background-color: #2196f3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .edit-button:hover {
+            background-color: #1976d2;
         }
     </style>
-</head>
-<body>
-    <div class="navigation">
-        <a href="/projects" class="active">Проекты</a>
-        <a href="/employee">Сотрудники</a>
-        <a href="/job">Должность</a>
-    </div>
-    <h1>Projects</h1>
-    <ul id="projectList"></ul>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        var projects = JSON.parse('{{ projects_json|safe }}');
-
-        var projectList = document.getElementById('projectList');
-        for (var i = 0; i < projects.length; i++) {
-            var project = projects[i];
-
-            var listItem = document.createElement('li');
-
-            // Mark overdue tasks
-            if (project.status !== 'Завершено' && project.status !== 'Отложено' && project.planned_end_date < Date.now()) {
-                listItem.classList.add('overdue-task');
-            }
-            // Mark tasks due within a week
-            else if (project.status !== 'Завершено' && project.status !== 'Отложено' && project.planned_end_date - (7 * 24 * 60 * 60 * 1000) < Date.now()) {
-                listItem.classList.add('due-soon-task');
-            }
-
-            var projectName = document.createElement('div');
-            projectName.classList.add('project-name');
-            projectName.textContent = project.name;
-
-            var projectDetails = document.createElement('div');
-            projectDetails.classList.add('project-details');
-            projectDetails.innerHTML = 'Short Name: ' + project.short_name + '<br>' +
-                                       'Status: ' + project.status + '<br>' +
-                                       'Start Date: ' + project.start_date + '<br>' +
-                                       'Planned End Date: ' + project.planned_end_date + '<br>' +
-                                       'Actual End Date: ' + project.actual_end_date + '<br>' +
-                                       'Cost: ' + project.cost;
-
-            var projectDescription = document.createElement('div');
-            projectDescription.classList.add('project-description');
-            projectDescription.textContent = project.description;
-
-            var deleteButton = document.createElement('button');
-            deleteButton.type = 'button';
-            deleteButton.classList.add('delete-button');
-            deleteButton.textContent = 'Delete';
-
-            deleteButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                var projectId = project.id;
-                deleteProject(projectId);
-            });
-
-            listItem.appendChild(projectName);
-            listItem.appendChild(projectDetails);
-            listItem.appendChild(projectDescription);
-            listItem.appendChild(deleteButton);
-            projectList.appendChild(listItem);
-
-            // Add tasks button
-            var tasksButton = document.createElement('a');
-            tasksButton.href = '/tasks/' + project.id + '/';
-            tasksButton.classList.add('tasks-button');
-            tasksButton.textContent = 'Задачи';
-            tasksButton.setAttribute('data-project-id', project.id);
-
-            tasksButton.addEventListener('click', (function(projectId) {
-                return function(event) {
-                    event.stopPropagation();
-                    window.location.href = '/tasks/' + projectId;
-                }
-            })(project.id));
-
-            listItem.appendChild(tasksButton);
-
-            listItem.addEventListener('click', function() {
-                var details = this.getElementsByClassName('project-details')[0];
-                var description = this.getElementsByClassName('project-description')[0];
-                var deleteButton = this.getElementsByClassName('delete-button')[0];
-
-                if (details.style.display === 'block') {
-                    details.style.display = 'none';
-                    description.style.display = 'none';
-                    deleteButton.style.display = 'none';
-                } else {
-                    details.style.display = 'block';
-                    description.style.display = 'block';
-                    deleteButton.style.display = 'block';
-                }
-            });
-        }
-
+        // Функция для отправки DELETE запроса
         function deleteProject(projectId) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('DELETE', '/delete_project/' + projectId);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        alert('Проект успешно удален');
-                        location.reload(); // Пример обновления списка проектов
-                    } else {
-                        alert('Не удалось удалить проект');
-                    }
+            $.ajax({
+                url: '/delete_project/' + projectId,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message);
+                    // Обновление страницы после удаления проекта
+                    location.reload();
+                },
+                error: function(error) {
+                    alert('Error deleting project: ' + error.responseJSON.message);
                 }
-            };
-            xhr.send();
+            });
         }
     </script>
-    <div class="create-button">
-        <a href="/create_project">Создание проекта</a>
-    </div>
+</head>
+<body>
+    <h1>Projects</h1>
+    <!-- Кнопка для создания проекта -->
+    <a href="/create_project">Create Project</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Сокращ. назв.</th>
+                <th>Статус</th>
+                <th>Описание</th>
+                <th>Дата старта</th>
+                <th>Предп. заверш.</th>
+                <th>Дата заверш.</th>
+                <th>Цена</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr>
+                <td>{{ project.id }}</td>
+                <td>{{ project.name }}</td>
+                <td>{{ project.short_name }}</td>
+                <td>{{ project.status }}</td>
+                <td>{{ project.description }}</td>
+                <td>{{ project.start_date }}</td>
+                <td>{{ project.planned_end_date }}</td>
+                <td>{{ project.actual_end_date }}</td>
+                <td>{{ project.cost }}</td>
+                <td>
+                    <!-- Кнопка для удаления проекта -->
+                    <button onclick="deleteProject({{ project.id }})">&#10060</button>
+                    <!-- Кнопка для редактирования проекта -->
+                    <a class="edit-button" href="/edit_project/{{ project.id }}">&#x1F58A</a>
+                    <!-- Кнопка для перехода к задачам -->
+                    <a href="{{ project_url }}/tasks/{{ project.id }}">&#128203</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
