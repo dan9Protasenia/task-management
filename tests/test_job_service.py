@@ -24,7 +24,7 @@ class JobServiceTestCase(unittest.TestCase):
 
     def setUp(self):
         app.testing = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         self.app_context = app.app_context()
         self.app_context.push()
         bd.create_all()
