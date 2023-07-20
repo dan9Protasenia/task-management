@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee</title>
+    <style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+    h1 {
+        color: #4caf50;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 90%;
+        border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #4caf50;
+        color: #fff;
+    }
+    tr:hover {
+        background-color: #f2f2f2;
+    }
+    button, .edit-button {
+        padding: 10px 15px;
+        background-color: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 5px;
+    }
+    button:hover, .edit-button:hover {
+        background-color: #d32f2f;
+    }
+    .edit-button {
+        background-color: #2196f3;
+    }
+    .edit-button:hover {
+        background-color: #1976d2;
+    }
+    a {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #4caf50;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
+    }
+    a:hover {
+        background-color: #45a049;
+    }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteEmployee(employeeId) {
+        $.ajax({
+            url: '/delete_employee/' + employeeId,
+            type: 'DELETE',
+            success: function(response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function(error) {
+                alert('Error deleting employee: ' + error.responseJSON.message);
+            }
+        });
+    }
+</script>
+</head>
+<body>
+    <h1>Сотрудники</h1>
+    <a href="/create_employee">Создать сотрудника</a>
+
+
+    <table id="employees-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Фамилия</th>
+                <th>Имя.</th>
+                <th>Отчество</th>
+                <th>Должность</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.last_name }}</td>
+                <td>{{ employee.first_name }}</td>
+                <td>{{ employee.middle_name }}</td>
+                <td>{{ employee.position }}</td>
+                <td>
+                    <button onclick="deleteEmployee({{ employee.id }})">&#10060</button>
+                    <a class="edit-button" href="/edit_employee/{{ employee.id }}">&#x1F58A</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
