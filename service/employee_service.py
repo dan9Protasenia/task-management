@@ -4,6 +4,15 @@ from service.task_service import is_employee_assigned_to_task
 repository = EmployeeRepository()
 
 
+def get_employee(employee_id):
+    employee = repository.get_by_id(employee_id)
+    if employee:
+        employee_dict = employee_to_dict(employee)
+        employee_dict['id'] = employee.id
+        return employee_dict
+    return None
+
+
 def get_all_employees(search_query=None):
     employees = repository.get_all(search_query)
     employee_list = []
@@ -87,3 +96,14 @@ def get_assigned_employees(job_id):
         }
         employee_list.append(employee_data)
     return employee_list
+
+
+def employee_to_dict(employee):
+    employee_dict = {
+        'last_name': employee.last_name,
+        'first_name': employee.first_name,
+        'middle_name': employee.middle_name,
+        'position': employee.position
+
+    }
+    return employee_dict
