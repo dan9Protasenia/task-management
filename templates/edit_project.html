@@ -62,30 +62,31 @@
     </style>
 </head>
 <body>
-    <h1>Edit Project</h1>
+    <h1>Изменение проекта</h1>
     <form id="editProjectForm" method="PUT" action="/edit_project/{{ project.id }}">
-        <label for="name">Name:</label>
+        <label for="name">Название:</label>
         <input type="text" id="name" name="name" value="{{ project.name }}" required>
 
-        <label for="short_name">Short Name:</label>
+        <label for="short_name">Сокращенное название:</label>
         <input type="text" id="short_name" name="short_name" value="{{ project.short_name }}" required>
 
-        <label for="description">Description:</label>
+        <label for="description">Описание:</label>
         <textarea id="description" name="description" required>{{ project.description }}</textarea>
 
-        <label for="planned_end_date">Planned End Date:</label>
+        <label for="planned_end_date">Плановое завершение:</label>
         <input type="date" id="planned_end_date" name="planned_end_date" value="{{ project.planned_end_date }}" required>
 
-        <label for="cost">Cost:</label>
+        <label for="cost">Цена:</label>
         <input type="number" id="cost" name="cost" value="{{ project.cost }}" required>
 
-        <label for="status">Status:</label>
+        <label for="status">Статус:</label>
         <select id="status" name="status" required>
-            <option value="В работе" {% if project.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-            <option value="Завершено" {% if project.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="В работе" {% if project.status == 'In Progress' %}selected{% endif %}>В процессе</option>
+            <option value="Завершено" {% if project.status == 'Completed' %}selected{% endif %}>Завершено</option>
         </select>
 
-        <input type="submit" value="Update Project">
+
+        <input type="submit" value="Обновить проект">
     </form>
 <script>
     document.getElementById("editProjectForm").addEventListener("submit", function(event) {
