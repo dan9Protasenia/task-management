@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 from service.employee_service import get_all_employees, create_employee, update_employee, delete_employee, \
-    get_employees_by_position
+    get_employees_by_position, get_employee
 
 employee = Blueprint('employee', __name__)
 
@@ -15,25 +15,33 @@ def get_employees():
     else:
         employees = get_all_employees()
 
-    return jsonify(employees=employees)
+    if request.headers.get('Accept') == 'application/json':
+        return jsonify(employees=employees)
+    else:
+        return render_template('employees.html', employees=employees)
 
 
-@employee.route('/create_employee', methods=['POST'])
+@employee.route('/create_employee', methods=['POST', 'GET'])
 def create_employee_route():
-    data = request.get_json()
-    employee = create_employee(data)
-    if employee:
-        return jsonify(message='Employee created successfully'), 201
-    return jsonify(message='Failed to create employee'), 400
+    if request.method == "POST":
+        try:
+            data = request.get_json()
+            create_employee(data)
+            return jsonify(message='Employee created successfully'), 201
+        except Exception as e:
+            return jsonify(message='Failed to create employee: ' + str(e)), 500
+    else:
+        return render_template('create_employee.html')
 
-
-@employee.route('/edit_employee/<int:employee_id>', methods=['PUT'])
+@employee.route('/edit_employee/<int:employee_id>', methods=['PUT', 'GET'])
 def edit_employee_route(employee_id):
-    data = request.get_json()
-    employee = update_employee(employee_id, data)
-    if employee:
-        return jsonify(message='Employee updated successfully', employee=employee)
-    return jsonify(message='Employee not found'), 404
+    if request.method == "PUT":
+        data = request.get_json()
+        update_employee(employee_id, data)
+        return jsonify(message='Employee update successfully')
+    else:
+        employee_data = get_employee(employee_id)
+        return render_template('edit_employee.html', employee=employee_data)
 
 
 @employee.route('/delete_employee/<int:employee_id>', methods=['DELETE'])
