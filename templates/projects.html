@@ -76,17 +76,63 @@
         .edit-button:hover {
             background-color: #1976d2;
         }
+        .filter-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #ff9800;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .filter-button:hover {
+            background-color: #f57c00;
+        }
+        .filter-menu {
+            display: none;
+            margin-top: 20px;
+        }
+        .filter-menu label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .filter-menu input,
+        .filter-menu select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        .filter-menu .apply-filter-button {
+            padding: 12px 24px;
+            background-color: #2196f3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .filter-menu .apply-filter-button:hover {
+            background-color: #1976d2;
+        }
+        .filter-menu .close-icon {
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Функция для отправки DELETE запроса
         function deleteProject(projectId) {
             $.ajax({
                 url: '/delete_project/' + projectId,
                 type: 'DELETE',
                 success: function(response) {
                     alert(response.message);
-                    // Обновление страницы после удаления проекта
                     location.reload();
                 },
                 error: function(error) {
@@ -94,23 +140,74 @@
                 }
             });
         }
+
+        function toggleFilterMenu() {
+            $('.filter-menu').slideToggle();
+        }
+
+        function applyFilter() {
+            var nameFilter = $('#name-filter').val();
+            var startDateFilter = $('#start-date-filter').val();
+            var endDateFilter = $('#end-date-filter').val();
+            var overdueFilter = $('#overdue-filter').val();
+
+            var url = '/projects';
+            var queryParams = [];
+            if (nameFilter) {
+                queryParams.push('name=' + encodeURIComponent(nameFilter));
+            }
+            if (startDateFilter) {
+                queryParams.push('start_date=' + encodeURIComponent(startDateFilter));
+            }
+            if (endDateFilter) {
+                queryParams.push('end_date=' + encodeURIComponent(endDateFilter));
+            }
+            if (overdueFilter) {
+                queryParams.push('overdue=' + encodeURIComponent(overdueFilter));
+            }
+            if (queryParams.length > 0) {
+                url += '?' + queryParams.join('&');
+            }
+
+            window.location.href = url;
+        }
     </script>
 </head>
 <body>
-    <h1>Projects</h1>
-    <!-- Кнопка для создания проекта -->
-    <a href="/create_project">Create Project</a>
-    <table>
+    <h1>Проекты</h1>
+    <a href="/create_project">Создать проект</a>
+    <a class="filter-button" onclick="toggleFilterMenu()">Фильтр</a>
+    <div class="filter-menu">
+        <label for="name-filter">Название:</label>
+        <input type="text" id="name-filter">
+        <br>
+        <label for="start-date-filter">Дата начала:</label>
+        <input type="date" id="start-date-filter">
+        <br>
+        <label for="end-date-filter">Дата завершения:</label>
+        <input type="date" id="end-date-filter">
+        <br>
+        <label for="overdue-filter">Просрочено:</label>
+        <select id="overdue-filter">
+            <option value="">Все</option>
+            <option value="true">ДА</option>
+            <option value="false">Нет</option>
+        </select>
+        <br>
+        <button class="apply-filter-button" onclick="applyFilter()">Применить</button>
+        <span class="close-icon" onclick="toggleFilterMenu()">&#10060</span>
+    </div>
+    <table id="project-table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Название</th>
-                <th>Сокращ. назв.</th>
+                <th>Сокр. назв.</th>
                 <th>Статус</th>
                 <th>Описание</th>
-                <th>Дата старта</th>
-                <th>Предп. заверш.</th>
-                <th>Дата заверш.</th>
+                <th>Дата нач.</th>
+                <th>План. зав.</th>
+                <th>Дата зав.</th>
                 <th>Цена</th>
                 <th>Действие</th>
             </tr>
@@ -128,11 +225,11 @@
                 <td>{{ project.actual_end_date }}</td>
                 <td>{{ project.cost }}</td>
                 <td>
-                    <!-- Кнопка для удаления проекта -->
+                    <!-- Button to delete the project -->
                     <button onclick="deleteProject({{ project.id }})">&#10060</button>
-                    <!-- Кнопка для редактирования проекта -->
+                    <!-- Button to edit the project -->
                     <a class="edit-button" href="/edit_project/{{ project.id }}">&#x1F58A</a>
-                    <!-- Кнопка для перехода к задачам -->
+                    <!-- Button to go to tasks -->
                     <a href="{{ project_url }}/tasks/{{ project.id }}">&#128203</a>
                 </td>
             </tr>
@@ -140,4 +237,4 @@
         </tbody>
     </table>
 </body>
-</html>
+
