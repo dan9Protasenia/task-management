@@ -54,11 +54,10 @@ def edit_project(project_id):
         return render_template('edit_project.html', project=project_data)
 
 
-
 @project.route('/delete_project/<int:project_id>', methods=['DELETE'])
-def delete_project(project_id):
-    project = delete_project(project_id)
-    if project:
+def delete_project_route(project_id):
+    project_del = delete_project(project_id)
+    if project_del:
         return jsonify(message='Project deleted successfully')
     return jsonify(message='Project not found')
 
