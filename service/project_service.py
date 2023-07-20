@@ -1,4 +1,4 @@
-from datetime import date,datetime
+from datetime import date
 
 from models.project_model import Project
 from repository.project_repository import ProjectRepository
