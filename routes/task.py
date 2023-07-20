@@ -69,15 +69,18 @@ def get_tasks(project_id):
     if request.headers.get('Accept') == 'application/json':
         return jsonify(tasks=tasks)
     else:
-        return render_template('tasks.html', tasks=tasks)
+        return render_template('tasks.html', tasks=tasks, project_id=project_id)
 
 
 @task.route('/create_task/<int:project_id>', methods=['POST', 'GET'])
 def create_task_route(project_id):
     if request.method == "POST":
-        data = request.get_json()
-        create_task(project_id, data)
-        return jsonify(message='Project created successfully')
+        try:
+            data = request.get_json()
+            task = create_task(project_id, data)
+            return jsonify(message='Task created successfully', task_id=task.id), 201
+        except Exception as e:
+            return jsonify(message='Failed to create task: ' + str(e)), 500
     else:
         return render_template('create_task.html', project_id=project_id)
 
