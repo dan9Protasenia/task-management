@@ -90,7 +90,10 @@
       .then(response => response.json())
       .then(result => {
         console.log(result);
-        // handle the response here
+        if (result.task_id) {
+          const taskId = result.task_id;
+          window.location.href = `/tasks/${project_id}`;
+        }
       })
       .catch(error => {
         console.error(error);
