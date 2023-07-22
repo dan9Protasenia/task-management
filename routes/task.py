@@ -3,7 +3,7 @@ from datetime import date
 from flask import Blueprint, request, jsonify, render_template
 
 from repository.task_repository import Task
-from service.task_service import create_task, update_task, delete_task, get_task_performers, set_task_performers
+from service.task_service import create_task, update_task, delete_task, get_task_performers, set_task_performers, get_task
 
 task = Blueprint('task', __name__)
 
@@ -85,11 +85,15 @@ def create_task_route(project_id):
         return render_template('create_task.html', project_id=project_id)
 
 
-@task.route('/edit_task/<int:task_id>', methods=['PUT'])
+@task.route('/edit_task/<int:task_id>', methods=['PUT', 'GET'])
 def edit_task_route(task_id):
-    data = request.get_json()
-    update_task(task_id, data)
-    return jsonify(message='Task updated successfully')
+    if request.method == "PUT":
+        data = request.get_json()
+        update_task(task_id, data)
+        return jsonify(message="Task updated successfully")
+    else:
+        task_data = get_task(task_id)
+        return render_template('edit_task.html', task=task_data)
 
 
 @task.route('/delete_task/<int:task_id>', methods=['DELETE'])
