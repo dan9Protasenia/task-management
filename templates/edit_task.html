@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea,
+        select,
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Изменение задачи</h1>
+    <form id="editTaskForm" method="PUT" action="/edit_task/{{ task.id }}">
+        <label for="name">Должность:</label>
+        <input type="text" id="name" name="name" value="{{ task.name }}" required>
+
+        <label for="priority">Ставка:</label>
+        <input type="text" id="priority" name="priority" value="{{ task.priority }}" required>
+
+        <label for="status">Статус:</label>
+        <input type="text" id="status" name="status" value="{{ task.status }}" required>
+
+        <input type="submit" value="Обновить должность">
+    </form>
+<script>
+    document.getElementById("editTaskForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var formData = new FormData(form);
+        var jsonData = {};
+
+        formData.forEach(function(value, key) {
+            jsonData[key] = value;
+        });
+
+        fetch("/edit_task/{{ task.id }}", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then(function(response) {
+            if (response.ok) {
+                alert('Task updated successfully');
+                window.location.href = "http://127.0.0.1:5000/tasks";
+            } else {
+                alert("Failed to update task");
+            }
+        })
+        .catch(function(error) {
+            console.log("Error:", error);
+            alert("An error occurred while updating the task");
+        });
+    });
+</script>
+</body>
+</html>
