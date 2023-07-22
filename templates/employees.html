@@ -3,10 +3,18 @@
 <head>
     <title>Employee</title>
     <style>
-    body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding: 20px;
+              html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
     h1 {
         color: #4caf50;
@@ -53,7 +61,7 @@
     .edit-button:hover {
         background-color: #1976d2;
     }
-    a {
+     a {
         display: inline-block;
         padding: 12px 24px;
         background-color: #4caf50;
@@ -63,14 +71,108 @@
         font-size: 16px;
         margin-bottom: 20px;
         transition: background-color 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     a:hover {
         background-color: #45a049;
     }
 
+     form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .search-button,
+        .reset-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover,
+        .reset-button:hover {
+            background-color: #45a049;
+        }
+
+        .reset-button {
+            margin-top: 20px;
+        }
+
+    .menu-bar {
+        background-color: #4caf50;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        color: #fff;
+        font-weight: bold;
+        font-size: 50px;
+    }
+
+    .menu-bar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    .menu-bar ul li.active a {
+            background-color: #008000;
+            color: #fff;
+    }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <script>
     function deleteEmployee(employeeId) {
         $.ajax({
             url: '/delete_employee/' + employeeId,
@@ -84,38 +186,54 @@
             }
         });
     }
-</script>
+
+
+    </script>
 </head>
 <body>
-    <h1>Сотрудники</h1>
-    <a href="/create_employee">Создать сотрудника</a>
+<div class="menu-bar">
+    <div class="logo">Qulix</div>
+    <ul>
+        <li><a href="/projects">Проекты</a></li>
+        <li class="active"><a href="/employees">Сотрудники</a></li>
+        <li><a href="/jobs">Должности</a></li>
+    </ul>
+</div>
+<h1>Сотрудники</h1>
+<form action="/employees" method="GET">
+    <input type="text" name="search_query" placeholder="Полнотекстовый поиск по ФИО или должности"
+           value="{{ request.args.get('search_query') }}">
+    <button type="submit">Поиск</button>
+    <a class="reset-button" href="/employees">Сбросить</a>
+</form>
+<a href="/create_employee">Создать сотрудника</a>
 
 
-    <table id="employees-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Фамилия</th>
-                <th>Имя.</th>
-                <th>Отчество</th>
-                <th>Должность</th>
-                <th>Действие</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td>{{ employee.id }}</td>
-                <td>{{ employee.last_name }}</td>
-                <td>{{ employee.first_name }}</td>
-                <td>{{ employee.middle_name }}</td>
-                <td>{{ employee.position }}</td>
-                <td>
-                    <button onclick="deleteEmployee({{ employee.id }})">&#10060</button>
-                    <a class="edit-button" href="/edit_employee/{{ employee.id }}">&#x1F58A</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table id="employees-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Фамилия</th>
+        <th>Имя.</th>
+        <th>Отчество</th>
+        <th>Должность</th>
+        <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for employee in employees %}
+    <tr>
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.last_name }}</td>
+        <td>{{ employee.first_name }}</td>
+        <td>{{ employee.middle_name }}</td>
+        <td>{{ employee.position }}</td>
+        <td>
+            <button onclick="deleteEmployee({{ employee.id }})">&#10060</button>
+            <a class="edit-button" href="/edit_employee/{{ employee.id }}">&#x1F58A</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 </body>
