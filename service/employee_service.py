@@ -14,8 +14,9 @@ def get_employee(employee_id):
 
 
 def get_all_employees(search_query=None):
-    employees = repository.get_all(search_query)
+    employees = repository.get_all()
     employee_list = []
+
     for employee in employees:
         employee_data = {
             'last_name': employee.last_name,
@@ -24,8 +25,19 @@ def get_all_employees(search_query=None):
             'position': employee.position,
             'id': employee.id
         }
+
+        if search_query is not None and isinstance(search_query, str):
+            search_query = search_query.lower()
+            if (search_query not in employee_data['last_name'].lower() and
+                    search_query not in employee_data['first_name'].lower() and
+                    search_query not in employee_data['middle_name'].lower() and
+                    search_query not in employee_data['position'].lower()):
+                continue
+
         employee_list.append(employee_data)
+
     return employee_list
+
 
 
 def create_employee(data):
@@ -83,19 +95,19 @@ def get_employees_by_position(position):
     return employee_list
 
 
-def get_assigned_employees(job_id):
-    employees = Employee.query.filter(Employee.position == job_id).all()
-    employee_list = []
-    for employee in employees:
-        employee_data = {
-            'last_name': employee.last_name,
-            'first_name': employee.first_name,
-            'middle_name': employee.middle_name,
-            'position': employee.position,
-            'id': employee.id
-        }
-        employee_list.append(employee_data)
-    return employee_list
+# def get_assigned_employees(job_id):
+#     employees = Employee.query.filter(Employee.position == job_id).all()
+#     employee_list = []
+#     for employee in employees:
+#         employee_data = {
+#             'last_name': employee.last_name,
+#             'first_name': employee.first_name,
+#             'middle_name': employee.middle_name,
+#             'position': employee.position,
+#             'id': employee.id
+#         }
+#         employee_list.append(employee_data)
+#     return employee_list
 
 
 def employee_to_dict(employee):
