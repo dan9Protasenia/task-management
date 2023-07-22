@@ -38,7 +38,7 @@ def edit_employee_route(employee_id):
     if request.method == "PUT":
         data = request.get_json()
         update_employee(employee_id, data)
-        return jsonify(message='Employee update successfully')
+        return jsonify(message='Employee updated successfully')
     else:
         employee_data = get_employee(employee_id)
         return render_template('edit_employee.html', employee=employee_data)
