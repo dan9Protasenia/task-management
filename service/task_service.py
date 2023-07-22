@@ -5,6 +5,15 @@ from repository.task_repository import TaskRepository, Task
 repository = TaskRepository()
 
 
+def get_task(task_id):
+    task = repository.get_by_id(task_id)
+    if task:
+        employee_dict = task_to_dict(task)
+        employee_dict['id'] = task.id
+        return employee_dict
+    return None
+
+
 def get_all_tasks():
     tasks = repository.get_all()
     task_list = []
