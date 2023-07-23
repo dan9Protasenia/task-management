@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from models.project_model import Project
 from repository.project_repository import ProjectRepository
@@ -81,9 +81,6 @@ def create_project(data):
     repository.create(project)
 
     return project
-
-
-from datetime import datetime
 
 
 def update_project(project_id, data):
