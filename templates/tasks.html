@@ -14,224 +14,284 @@
             min-height: 100vh;
             text-align: center;
         }
-    h1 {
-        color: #4caf50;
-        font-size: 36px;
-        margin-bottom: 20px;
-    }
-    table {
-        width: 90%;
-        border-collapse: collapse;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-    th {
-        background-color: #4caf50;
-        color: #fff;
-    }
-    tr:hover {
-        background-color: #f2f2f2;
-    }
-    button, .edit-button {
-        padding: 10px 15px;
-        background-color: #f44336;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-right: 5px;
-    }
-    button:hover, .edit-button:hover {
-        background-color: #d32f2f;
-    }
-    .edit-button {
-        background-color: #2196f3;
-    }
-    .edit-button:hover {
-        background-color: #1976d2;
-    }
-    a {
+        h1 {
+            color: #4caf50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4caf50;
+            color: #fff;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        button, .edit-button {
+            padding: 10px 15px;
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+        button:hover, .edit-button:hover {
+            background-color: #d32f2f;
+        }
+        .edit-button {
+            background-color: #2196f3;
+        }
+        .edit-button:hover {
+            background-color: #1976d2;
+        }
+        a {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+        tr.completed {
+            background-color: #d3d3d3;
+        }
+        tr.not-started {
+            background-color: #ffc0cb;
+        }
+        tr.in-progress {
+            background-color: #87ceeb;
+        }
+        tr.overdue {
+            background-color: #ff0000;
+        }
+        tr.within-week {
+            background-color: #ffff00;
+        }
+
+            .filter-button {
         display: inline-block;
         padding: 12px 24px;
-        background-color: #4caf50;
+        background-color: #ff9800;
         color: #fff;
         text-decoration: none;
         border-radius: 5px;
         font-size: 16px;
-        margin-bottom: 20px;
+        margin-left: 10px;
         transition: background-color 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    a:hover {
-        background-color: #45a049;
+
+    .filter-button:hover {
+        background-color: #f57c00;
     }
+
+    .filter-menu {
+        display: none;
+        margin-top: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+        width: 300px;
+    }
+
+    .filter-menu label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .filter-menu input,
+    .filter-menu select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .filter-menu .apply-filter-button {
+        padding: 12px 24px;
+        background-color: #2196f3;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-menu .apply-filter-button:hover {
+        background-color: #1976d2;
+    }
+
+    .filter-menu .close-icon {
+        font-size: 16px;
+        cursor: pointer;
+    }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    function deleteTask(taskId) {
-        $.ajax({
-            url: '/delete_task/' + taskId,
-            type: 'DELETE',
-            success: function(response) {
-                alert(response.message);
-                location.reload();
-            },
-            error: function(error) {
-                alert('Error deleting task: ' + error.responseJSON.message);
+        function deleteTask(taskId) {
+            $.ajax({
+                url: '/delete_task/' + taskId,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(error) {
+                    alert('Error deleting task: ' + error.responseJSON.message);
+                }
+            });
+        }
+        function applyFilter() {
+            var nameFilter = document.getElementById('name-filter').value;
+            var startDateFilter = document.getElementById('start-date-filter').value;
+            var endDateFilter = document.getElementById('end-date-filter').value;
+            var overdueFilter = document.getElementById('overdue-filter').value;
+
+            var url = '/tasks/{{ project_id }}';
+            var queryParams = [];
+            if (nameFilter) {
+                queryParams.push('name=' + encodeURIComponent(nameFilter));
             }
-        });
-    }
+            if (startDateFilter) {
+                queryParams.push('start_date_from=' + encodeURIComponent(startDateFilter));
+            }
+            if (endDateFilter) {
+                queryParams.push('end_date_to=' + encodeURIComponent(endDateFilter));
+            }
+            if (overdueFilter) {
+                queryParams.push('overdue=' + encodeURIComponent(overdueFilter));
+            }
+
+            if (queryParams.length > 0) {
+                url += '?' + queryParams.join('&');
+            }
+
+            window.location.href = url;
+        }
+        function toggleFilterMenu() {
+            var filterMenu = document.querySelector('.filter-menu');
+            filterMenu.style.display = filterMenu.style.display === 'block' ? 'none' : 'block';
+            filterMenu.classList.toggle('active');
+        }
+        function applyRowColor() {
+            var rows = document.querySelectorAll('#project-table tbody tr');
+            var currentDate = new Date();
+
+            rows.forEach(function (row) {
+                var status = row.querySelector('td:nth-child(5)').textContent;
+                var plannedEndDate = new Date(row.querySelector('td:nth-child(7)').textContent);
+
+                if (status === 'Завершена') {
+                    row.classList.add('completed');
+                } else if (status === 'Не начата') {
+                    row.classList.add('not-started');
+                } else if (status === 'В процессе') {
+                    row.classList.add('in-progress');
+                }
+
+                if (plannedEndDate < currentDate) {
+                    row.classList.add('overdue');
+                } else {
+                    var timeDifference = plannedEndDate.getTime() - currentDate.getTime();
+                    var daysDifference = timeDifference / (1000 * 3600 * 24);
+
+                    if (daysDifference <= 7) {
+                        row.classList.add('within-week');
+                    }
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', applyRowColor);
+
     </script>
 </head>
 <body>
-    <h1>Задачи</h1>
-     <a href="http://127.0.0.1:5000/projects">Вернуться к проектам</a>
-    <div class="create-button">
-
-
-        <a href="/create_task/{{ project_id }}">Создать задачу</a>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Название</th>
-                <th>Приоритет</th>
-                <th>Дата начала</th>
-                <th>Дата завершения</th>
-                <th>Статус</th>
-                <th>Действие</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.name }}</td>
-                <td>{{ task.priority }}</td>
-                <td>{{ task.start_date }}</td>
-                <td>{{ task.planned_end_date }}</td>
-                <td>{{ task.status }}</td>
-                <td>
-                    <button onclick="deleteTask({{ task.id }})">&#10060</button>
-                    <a class="edit-button" href="/edit_task/{{ task.id }}">&#x1F58A;</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-<script>
-    var project_id = window.location.pathname.split('/')[2];
-
-    var createTaskLink = document.getElementById('createTaskLink');
-    createTaskLink.addEventListener('click', function (event) {
-        event.preventDefault();
-        createTask();
-    });
-
-    var tasks = JSON.parse('{{ tasks_json|safe }}');
-    var projectId = '{{ project_id }}'; // Получение значения project_id из контекста
-
-    var taskList = document.getElementById('taskList');
-    for (var i = 0; i < tasks.length; i++) {
-        (function () {
-            var task = tasks[i];
-
-            var listItem = document.createElement('div');
-            listItem.classList.add('task');
-
-            var taskName = document.createElement('div');
-            taskName.classList.add('task-name');
-            taskName.innerHTML = '<span>' + task.name + '</span>' + '<span>ID: ' + task.id + '</span>';
-
-            var taskDetails = document.createElement('div');
-            taskDetails.classList.add('task-details');
-            taskDetails.innerHTML = '<p><strong>Name:</strong> ' + task.name + '</p>' +
-                '<p><strong>Priority:</strong> ' + task.priority + '</p>' +
-                '<p><strong>Start Date:</strong> ' + task.start_date + '</p>' +
-                '<p><strong>Planned End Date:</strong> ' + task.planned_end_date + '</p>' +
-                '<p><strong>Actual End Date:</strong> ' + task.actual_end_date + '</p>' +
-                '<p><strong>Status:</strong> ' + task.status + '</p>';
-
-            var deleteButton = document.createElement('button');
-            deleteButton.type = 'button';
-            deleteButton.classList.add('delete-button');
-            deleteButton.textContent = 'Delete';
-
-            deleteButton.addEventListener('click', function (event) {
-                event.stopPropagation();
-                var taskId = task.id;
-                deleteTask(taskId);
-            });
-
-            taskName.addEventListener('click', function () {
-                var deleteButton = this.parentElement.getElementsByClassName('delete-button')[0];
-                var taskDetails = this.parentElement.getElementsByClassName('task-details')[0];
-
-                if (taskDetails.style.display === 'block') {
-                    deleteButton.style.display = 'none';
-                    taskDetails.style.display = 'none';
-                } else {
-                    deleteButton.style.display = 'block';
-                    taskDetails.style.display = 'block';
-                }
-            });
-
-            listItem.appendChild(taskName);
-            listItem.appendChild(deleteButton);
-            listItem.appendChild(taskDetails);
-            taskList.appendChild(listItem);
-        })();
-    }
-
-    function deleteTask(taskId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('DELETE', '/delete_task/' + taskId);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    alert('Задача успешно удалена');
-                    location.reload();
-                } else {
-                    alert('Не удалось удалить задачу');
-                }
-            }
-        };
-        xhr.send();
-    }
-
-    function createTask() {
-        var taskData = {
-            project_id: project_id,
-        };
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/create_task');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    alert('Задача успешно создана');
-                    location.reload();
-                } else {
-                    alert('Не удалось создать задачу');
-                }
-            }
-        };
-        xhr.send(JSON.stringify(taskData));
-    }
-
-</script>
-
-
+<h1>Задачи</h1>
+<a href="http://127.0.0.1:5000/projects">Вернуться к проектам</a>
+<div class="create-button">
+    <a href="/create_task/{{ project_id }}">Создать задачу</a>
+    <a class="filter-button" onclick="toggleFilterMenu()">Фильтр</a>
 </div>
+
+<div class="filter-menu">
+    <label for="name-filter">Название:</label>
+    <input type="text" id="name-filter" value="{{ request.args.get('name', '') }}">
+
+    <label for="start-date-filter">Дата начала:</label>
+    <input type="date" id="start-date-filter" value="{{ request.args.get('start_date_from', '') }}">
+
+    <label for="end-date-filter">Дата завершения:</label>
+    <input type="date" id="end-date-filter" value="{{ request.args.get('end_date_to', '') }}">
+
+    <label for="overdue-filter">Просрочено:</label>
+    <select id="overdue-filter">
+        <option value="">Все</option>
+        <option value="true" {% if request.args.get(
+        'overdue') == 'true' %}selected{% endif %}>ДА</option>
+        <option value="false" {% if request.args.get(
+        'overdue') == 'false' %}selected{% endif %}>Нет</option>
+    </select>
+
+    <button class="apply-filter-button" onclick="applyFilter()">Применить</button>
+    <span class="close-icon" onclick="toggleFilterMenu()">&#10060</span>
+</div>
+
+<table id="project-table">
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Приоритет</th>
+        <th>Дата начала</th>
+        <th>Дата завершения</th>
+        <th>Статус</th>
+        <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.name }}</td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.start_date }}</td>
+        <td>{{ task.planned_end_date }}</td>
+        <td>{{ task.status }}</td>
+        <td>
+            <button onclick="deleteTask({{ task.id }})">&#10060</button>
+            <a class="edit-button" href="/edit_task/{{ project.id }}/{{ task.id }}">&#x1F58A;</a>
+
+
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 </body>
 </html>
