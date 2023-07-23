@@ -14,10 +14,63 @@ def get_task(task_id):
     return None
 
 
-def get_all_tasks():
+def get_project_details(project_id):
+    try:
+        project = repository.get_by_id(project_id)
+
+        if project:
+            return project
+        else:
+            return None
+    except Exception as e:
+
+        print("Error getting project details:", e)
+        return None
+
+
+def get_all_tasks(project_id, name_filter=None, start_date_from_filter=None, start_date_to_filter=None,
+                  end_date_from_filter=None, end_date_to_filter=None, overdue_filter=None,
+                  cost_from_filter=None, cost_to_filter=None):
     tasks = repository.get_all()
     task_list = []
     for task in tasks:
+        if name_filter and name_filter.lower() not in task.name.lower():
+            continue
+
+        if start_date_from_filter:
+            start_date_from = date.fromisoformat(start_date_from_filter)
+            if task.start_date < start_date_from:
+                continue
+
+        if start_date_to_filter:
+            start_date_to = date.fromisoformat(start_date_to_filter)
+            if task.start_date > start_date_to:
+                continue
+
+        if end_date_from_filter:
+            end_date_from = date.fromisoformat(end_date_from_filter)
+            if task.planned_end_date < end_date_from:
+                continue
+
+        if end_date_to_filter:
+            end_date_to = date.fromisoformat(end_date_to_filter)
+            if task.planned_end_date > end_date_to:
+                continue
+
+        if overdue_filter == 'true':
+            if task.planned_end_date >= date.today():
+                continue
+
+        if cost_from_filter:
+            cost_from = float(cost_from_filter)
+            if task.cost < cost_from:
+                continue
+
+        if cost_to_filter:
+            cost_to = float(cost_to_filter)
+            if task.cost > cost_to:
+                continue
+
         task_data = {
             'id': task.id,
             'name': task.name,
@@ -35,7 +88,7 @@ def create_task(project_id, data):
     name = data['name']
     priority = data['priority']
     start_date = date.today()
-    planned_end_date = date.today()
+    planned_end_date = data['planned_end_date']
     actual_end_date = None
     status = data['status']
 
@@ -58,6 +111,7 @@ def update_task(task_id, data):
     task.name = data['name']
     task.priority = data['priority']
     task.status = data['status']
+    task.actual_end_date = data['actual_end_date']  # Get the actual end date from the input data
     repository.update(task)
     return task
 
