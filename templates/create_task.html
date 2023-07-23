@@ -1,105 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Create Task</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
+    <title>Create Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
 
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    form {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      margin: 0 auto;
-    }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
 
-    input[type="submit"] {
-      background-color: #4caf50;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-    input[type="submit"]:hover {
-      background-color: #45a049;
-    }
-  </style>
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-  <h1>Create Task</h1>
-  <form method="POST" action="/create_task/{{ project_id }}" onsubmit="submitForm(event)">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+    <h1>Create Task</h1>
+    <form method="POST" action="/create_task/{{ project_id }}" onsubmit="submitForm(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
 
-    <label for="priority">Priority:</label>
-    <input type="text" id="priority" name="priority" required>
+        <label for="priority">Priority:</label>
+        <input type="text" id="priority" name="priority" required>
 
-    <label for="status">Status:</label>
-    <input type="text" id="status" name="status" required>
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="Не начата">Не начата</option>
+            <option value="В процессе">В процессе</option>
+            <option value="Завершена">Завершена</option>
+            <option value="Отложена">Отложена</option>
+        </select>
 
-    <input type="submit" value="Create Task">
-  </form>
+        <input type="submit" value="Create Task">
+    </form>
 
-  <script>
-    function submitForm(event) {
-      event.preventDefault();
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
 
-      const form = event.target;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
 
-      const project_id = form.getAttribute("action").split("/").pop();
+            const project_id = form.getAttribute("action").split("/").pop();
+            data.name = document.getElementById("name").value;
 
-      fetch(`/create_task/${project_id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(result => {
-        console.log(result);
-        if (result.task_id) {
-          const taskId = result.task_id;
-          window.location.href = `/tasks/${project_id}`;
+            fetch(`/create_task/${project_id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                if (result.task_id) {
+                    const taskId = result.task_id;
+                    window.location.href = `/tasks/${project_id}`;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                // handle errors here
+            });
         }
-      })
-      .catch(error => {
-        console.error(error);
-        // handle errors here
-      });
-    }
-  </script>
+    </script>
 </body>
 </html>
