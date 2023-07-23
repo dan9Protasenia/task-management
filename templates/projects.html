@@ -194,26 +194,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -262,25 +242,6 @@
             window.location.href = url;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
     <script>
     function applyRowColor() {
@@ -289,19 +250,17 @@
 
         rows.forEach(function (row) {
             var status = row.querySelector('td:nth-child(4)').textContent;
-            var plannedEndDate = new Date(row.querySelector('td:nth-child(7)').textContent); // Преобразуем строку даты в объект типа Date
-
+            var plannedEndDate = new Date(row.querySelector('td:nth-child(7)').textContent);
             if (status === 'Завершено') {
-                row.classList.add('completed'); // Применяем серый маркер для завершенных проектов
+                row.classList.add('completed');
             } else if (plannedEndDate < currentDate) {
-                row.classList.add('overdue'); // Применяем красный маркер для просроченных проектов
+                row.classList.add('overdue');
             } else {
                 var timeDifference = plannedEndDate.getTime() - currentDate.getTime();
                 var daysDifference = timeDifference / (1000 * 3600 * 24);
 
                 if (daysDifference <= 7) {
-                    row.classList.add('within-week'); // Применяем желтый маркер для проектов, которые должны завершиться в течение недели
-                }
+                    row.classList.add('within-week');                }
             }
         });
     }
@@ -373,12 +332,9 @@
         <td>{{ project.actual_end_date }}</td>
         <td>{{ project.cost }}</td>
         <td>
-            <!-- Button to delete the project -->
             <button onclick="deleteProject({{ project.id }})">&#10060</button>
-            <!-- Button to edit the project -->
             <a class="edit-button" href="/edit_project/{{ project.id }}">&#x1F58A</a>
-            <!-- Button to go to tasks -->
-            <a href="{{ project_url }}/tasks/{{ project.id }}">&#128203</a>
+            <a href="{{ project_url }}/projects/{{ project.id }}/tasks">&#128203</a>
         </td>
     </tr>
     {% endfor %}
