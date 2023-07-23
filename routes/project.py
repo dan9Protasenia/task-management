@@ -5,16 +5,10 @@ from service.project_service import (
     create_project,
     update_project,
     delete_project,
-    get_project_tasks,
     get_project
 )
 
 project = Blueprint('project', __name__)
-
-
-@project.route('/')
-def index():
-    return jsonify(message='Welcome to the API')
 
 
 @project.route('/projects', methods=['GET'])
@@ -24,8 +18,12 @@ def get_projects():
     end_date_filter = request.args.get('end_date')
     overdue_filter = request.args.get('overdue')
 
-    projects = get_all_projects(name_filter=name_filter, start_date_filter=start_date_filter,
-                                end_date_filter=end_date_filter, overdue_filter=overdue_filter)
+    projects = get_all_projects(
+        name_filter=name_filter,
+        start_date_filter=start_date_filter,
+        end_date_filter=end_date_filter,
+        overdue_filter=overdue_filter
+    )
 
     if request.headers.get('Accept') == 'application/json':
         return jsonify(projects=projects)
@@ -60,8 +58,3 @@ def delete_project_route(project_id):
     if project_del:
         return jsonify(message='Project deleted successfully')
     return jsonify(message='Project not found')
-
-
-@project.route('/projects/<int:project_id>/tasks', methods=['GET'])
-def get_project_tasks_route(project_id):
-    return jsonify(tasks=get_project_tasks(project_id))
