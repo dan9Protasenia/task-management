@@ -39,7 +39,6 @@ def get_all_employees(search_query=None):
     return employee_list
 
 
-
 def create_employee(data):
     last_name = data['last_name']
     first_name = data['first_name']
@@ -93,21 +92,6 @@ def get_employees_by_position(position):
         }
         employee_list.append(employee_data)
     return employee_list
-
-
-# def get_assigned_employees(job_id):
-#     employees = Employee.query.filter(Employee.position == job_id).all()
-#     employee_list = []
-#     for employee in employees:
-#         employee_data = {
-#             'last_name': employee.last_name,
-#             'first_name': employee.first_name,
-#             'middle_name': employee.middle_name,
-#             'position': employee.position,
-#             'id': employee.id
-#         }
-#         employee_list.append(employee_data)
-#     return employee_list
 
 
 def employee_to_dict(employee):
