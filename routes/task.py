@@ -2,7 +2,6 @@ import logging
 
 from flask import Blueprint, request, jsonify, render_template
 
-from service.project_service import get_all_projects
 from service.task_service import (
     create_task,
     update_task,
@@ -63,7 +62,6 @@ def get_tasks(project_id):
         return render_template('tasks.html', tasks=tasks, project_id=project_id, project=project)
 
 
-
 @task.route('/create_task/<int:project_id>', methods=['POST', 'GET'])
 def create_task_route(project_id):
     if request.method == "POST":
@@ -74,6 +72,7 @@ def create_task_route(project_id):
         except Exception as e:
             return jsonify(message='Failed to create task: ' + str(e)), 500
     else:
+
         return render_template('create_task.html', project_id=project_id)
 
 
