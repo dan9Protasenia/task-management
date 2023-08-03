@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from repository.task_repository import TaskRepository, Task
 
@@ -31,7 +31,7 @@ def get_project_details(project_id):
 def get_all_tasks(project_id, name_filter=None, start_date_from_filter=None, start_date_to_filter=None,
                   end_date_from_filter=None, end_date_to_filter=None, overdue_filter=None,
                   cost_from_filter=None, cost_to_filter=None):
-    tasks = repository.get_all()
+    tasks = repository.get_all_tasks_by_project(project_id)
     task_list = []
     for task in tasks:
         if name_filter and name_filter.lower() not in task.name.lower():
@@ -88,7 +88,7 @@ def create_task(project_id, data):
     name = data['name']
     priority = data['priority']
     start_date = date.today()
-    planned_end_date = data['planned_end_date']
+    planned_end_date = datetime.strptime(data['planned_end_date'], '%Y-%m-%d').date()
     actual_end_date = None
     status = data['status']
 
@@ -111,7 +111,7 @@ def update_task(task_id, data):
     task.name = data['name']
     task.priority = data['priority']
     task.status = data['status']
-    task.actual_end_date = data['actual_end_date']  # Get the actual end date from the input data
+    task.actual_end_date = data['actual_end_date']
     repository.update(task)
     return task
 
