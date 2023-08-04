@@ -54,7 +54,7 @@ TARIFF_RATE_9999999999990 = 9999999999990.0
 TARIFF_RATE_0 = 0.0
 TARIFF_RATE_15 = 15.0
 
-# names employees
+# names employees.html
 LAST_NAME_1 = 'Last 1'
 LAST_NAME_2 = 'Last 2'
 LAST_NAME_3 = 'Last 3'
@@ -74,7 +74,7 @@ MIDDLE_NAME_4 = 'Middle 4'
 MIDDLE_NAME_DOE = 'Doe'
 MIDDLE_NAME_UPDATED = 'Updated Middle'
 
-# position employees
+# position employees.html
 POSITION_1 = 'Position 1'
 POSITION_2 = 'Position 2'
 POSITION_3 = 'Position 3'
