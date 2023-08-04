@@ -21,7 +21,7 @@ def get_all_jobs(name_filter=None):
 
         if name_filter is not None and isinstance(name_filter, str):
             if name_filter.lower() not in job_dict['name_position'].lower() \
-                    and name_filter.lower() not in job_dict['tariff_rate'].lower():
+                    and name_filter.lower() not in str(job_dict['tariff_rate']).lower():
                 continue
 
         job_dict['id'] = job.id
