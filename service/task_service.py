@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 
 from repository.task_repository import TaskRepository, Task
 
@@ -84,13 +84,16 @@ def get_all_tasks(project_id, name_filter=None, start_date_from_filter=None, sta
     return task_list
 
 
+from datetime import datetime
+
+
 def create_task(project_id, data):
-    name = data['name']
-    priority = data['priority']
+    name = data.get('name')
+    priority = data.get('priority')
     start_date = date.today()
-    planned_end_date = datetime.strptime(data['planned_end_date'], '%Y-%m-%d').date()
+    planned_end_date = datetime.strptime(data.get('planned_end_date', str(date.today())), '%Y-%m-%d').date()
     actual_end_date = None
-    status = data['status']
+    status = data.get('status')
 
     task = Task(
         name=name,
@@ -108,12 +111,17 @@ def create_task(project_id, data):
 
 def update_task(task_id, data):
     task = repository.get_by_id(task_id)
-    task.name = data['name']
-    task.priority = data['priority']
-    task.status = data['status']
-    task.actual_end_date = data['actual_end_date']
-    repository.update(task)
-    return task
+
+    if task:
+        task.name = data.get('name', task.name)
+        task.priority = data.get('priority', task.priority)
+        task.status = data.get('status', task.status)
+        task.actual_end_date = data.get('actual_end_date', task.actual_end_date)
+
+        repository.update(task)
+        return task
+    else:
+        raise ValueError("Task not found")
 
 
 def delete_task(task_id):
