@@ -63,11 +63,11 @@ class JobServiceTestCase(unittest.TestCase):
             'tariff_rate': TARIFF_RATE_15
         }
 
-        jobs = create_job(data)
+        job = create_job(data)
 
-        self.assertEqual(len(jobs), 1)
-        self.assertEqual(jobs[0].name_position, NAME_NEW_JOB)
-        self.assertEqual(jobs[0].tariff_rate, TARIFF_RATE_15)
+        self.assertIsInstance(job, Job)
+        self.assertEqual(job.name_position, NAME_NEW_JOB)
+        self.assertEqual(job.tariff_rate, TARIFF_RATE_15)
 
     def test_update_job(self):
         job = Job(name_position=NAME_JOB_1, tariff_rate=TARIFF_RATE_10)
@@ -89,7 +89,7 @@ class JobServiceTestCase(unittest.TestCase):
             'tariff_rate': TARIFF_RATE_10
         }
         job = create_job(job_data)
-        job_id = job[0].id
+        job_id = job.id
 
         result = delete_job(job_id)
         self.assertTrue(result)
