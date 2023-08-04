@@ -15,15 +15,15 @@ from service.task_service import (
 task = Blueprint('task', __name__)
 
 
-@task.route('/projects/<int:project_id>/tasks', methods=['GET'])
+@task.route('/tasks/<int:project_id>', methods=['GET'])
 def get_tasks(project_id):
     logging.basicConfig(filename='app.log', level=logging.DEBUG)
     project = get_project_details(project_id)
 
     logging.debug("Entering get_tasks function")
 
-    if project is None:
-        return jsonify(message="Project not found"), 404
+
+        # return jsonify(message="Project not found"), 404
 
     name_filter = request.args.get('name')
     start_date_from_filter = request.args.get('start_date')
@@ -55,7 +55,8 @@ def get_tasks(project_id):
                           )
 
     logging.debug(f"Tasks: {tasks}")
-
+    if project is None:
+        return render_template('tasks.html', tasks=tasks, project_id=project_id, project=project)
     if request.headers.get('Accept') == 'application/json':
         return jsonify(tasks=tasks)
     else:
@@ -87,7 +88,7 @@ def edit_task_route(project_id, task_id):
         return render_template('edit_task.html', task=task_data, project_id=project_id)
 
 
-@task.route('/delete_task/<int:project_id>/<int:task_id>', methods=['DELETE'])
+@task.route('/delete_task/<int:task_id>', methods=['DELETE'])
 def delete_task_route(task_id):
     delete_task(task_id)
     return jsonify(message='Task deleted successfully')
